@@ -8,4 +8,10 @@ module.exports = {
     "lib/parser.js", // Generated
     "node_modules/",
   ],
+  overrides: [{
+    files: ["*.peggy", "*.pegjs"],
+    rules: {
+      indent: "off",
+    },
+  }],
 };

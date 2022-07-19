@@ -9,5 +9,6 @@ benchmark
 coverage/
 docs
 examples
+src/
 test
 tsconfig.json
