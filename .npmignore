@@ -1,0 +1,13 @@
+.editorconfig
+.eslintrc.js
+.gitattributes
+.github
+.nyc_output
+.vscode/
+*.map
+benchmark
+coverage/
+docs
+examples
+test
+tsconfig.json

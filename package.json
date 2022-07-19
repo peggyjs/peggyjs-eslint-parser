@@ -1,0 +1,24 @@
+{
+  "name": "@peggy/eslint-parser",
+  "version": "0.0.0",
+  "description": "ESLint-style parser for Peggy grammars",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint . --ext js",
+    "parser": "peggy -o lib/parser.js src/parser.peggy"
+  },
+  "keywords": [
+    "eslint",
+    "parser",
+    "peg.js",
+    "peggy",
+    "plugin"
+  ],
+  "author": "Joe Hildebrand <joe-github@cursive.net>",
+  "license": "MIT",
+  "devDependencies": {
+    "@peggyjs/eslint-config": "2.0.0",
+    "eslint": "8.20.0",
+    "peggy": "2.0.1"
+  }
+}
