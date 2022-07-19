@@ -1,0 +1,11 @@
+{
+  "reporter": [
+    "text",
+    "lcov"
+  ],
+  "exclude": [
+    "lib/parser.js",
+    ".eslintrc.js",
+    "test/**"
+  ]
+}

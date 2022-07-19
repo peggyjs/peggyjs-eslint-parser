@@ -99,18 +99,18 @@ Grammar
     }
 
 TopLevelInitializer
-  = "{" code:CodeBlock "}" EOS {
+  = "{" value:CodeBlock "}" EOS {
       return loc({
         type: "top_level_initializer",
-        code,
+        value,
       });
     }
 
 Initializer
-  = code:CodeBlock EOS {
+  = value:CodeBlock EOS {
       return loc({
         type: "initializer",
-        code,
+        value,
       });
     }
 
@@ -126,7 +126,7 @@ Rule
         expression: displayName !== null
           ? loc({
               type: "named",
-              name: displayName,
+              value: displayName,
               expression,
             })
           : expression,
@@ -245,15 +245,15 @@ PrimaryExpression
     }
 
 RuleReferenceExpression
-  = name:IdentifierName !(__ (StringLiteral __)? "=") {
-      return loc({ type: "rule_ref", name });
+  = value:IdentifierName !(__ (StringLiteral __)? "=") {
+      return loc({ type: "rule_ref", value });
     }
 
 SemanticPredicateExpression
-  = operator:SemanticPredicateOperator __ code:CodeBlock {
+  = operator:SemanticPredicateOperator __ value:CodeBlock {
       return loc({
         type: OPS_TO_SEMANTIC_PREDICATE_TYPES[operator],
-        code,
+        value,
       });
     }
 
@@ -314,10 +314,10 @@ SingleLineCommentChars
   }
 
 IdentifierName "identifier"
-  = name:$(IdentifierStart tail:IdentifierPart*) {
+  = value:$(IdentifierStart tail:IdentifierPart*) {
       return loc({
         type: "name",
-        name,
+        value,
       });
     }
 
@@ -463,7 +463,7 @@ CodeBlock "code block"
   = "{" @BareCodeBlock "}"
 
 BareCodeBlock
-  = code:Code { return loc({ type: "code", code }); }
+  = value:Code { return loc({ type: "code", value }); }
 
 Code
   = $((![{}] SourceCharacter)+ / "{" Code "}")*
