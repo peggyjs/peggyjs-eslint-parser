@@ -1,19 +1,16 @@
 "use strict";
 
 const { ESLint } = require("eslint");
-const assert = require('assert');
+const assert = require("assert");
 const path = require("path");
 const test = require("node:test");
 
-test("parse", async () => {
+test("parse", async() => {
   const esl = new ESLint({
     cwd: path.join(__dirname, "fixtures"),
     overrideConfig: {
       parser: path.join(__dirname, "..", "lib", "index.js"),
-      rules: {
-        indent: "off"
-      },
-    }
+    },
   });
   const report = await esl.lintFiles(["fizzbuzz.peggy"]);
   assert(report);

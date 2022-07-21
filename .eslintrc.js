@@ -8,10 +8,12 @@ module.exports = {
     "lib/parser.js", // Generated
     "node_modules/",
   ],
-  overrides: [{
-    files: ["*.peggy", "*.pegjs"],
-    rules: {
-      indent: "off",
+  overrides: [
+    {
+      files: ["*.js"],
+      parserOptions: {
+        ecmaVersion: 2020,
+      },
     },
-  }],
+  ],
 };

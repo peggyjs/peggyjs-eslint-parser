@@ -117,12 +117,13 @@ Initializer
 Rule
   = name:IdentifierName __
     displayName:(@StringLiteral __)?
-    "=" __
+    equals:Equals __
     expression:Expression EOS
     {
       return loc({
         type: "rule",
         name,
+        equals,
         expression: displayName !== null
           ? loc({
               type: "named",
@@ -168,21 +169,21 @@ SequenceExpression
     }
 
 LabeledExpression
-  = pluck:Pluck label:LabelColon? expression:PrefixedExpression {
+  = pluck:Pluck name:LabelColon? expression:PrefixedExpression {
       if (expression.type.startsWith("semantic_")) {
         error("\"@\" cannot be used on a semantic predicate", pluck);
       }
       return loc({
         type: "labeled",
-        label,
+        name,
         pick: true,
         expression,
       });
     }
-  / label:LabelColon __ expression:PrefixedExpression {
+  / name:LabelColon __ expression:PrefixedExpression {
       return loc({
         type: "labeled",
-        label,
+        name,
         expression,
       });
     }
@@ -526,6 +527,11 @@ Zs = [\u0020\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]
 
 // Skipped
 
+Equals
+  = "=" { return loc({
+      type: "equals",
+    });
+  }
 __
   = (WhiteSpace / LineTerminatorSequence / Comment)*
 
