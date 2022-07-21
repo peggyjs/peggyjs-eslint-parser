@@ -61,11 +61,11 @@
       source: l.source,
       start: {
         line: l.start.line,
-        column: l.start.column,
+        column: l.start.column - 1,
       },
       end: {
         line: l.end.line,
-        column: l.end.column,
+        column: l.end.column - 1,
       },
     };
     node.range = [
