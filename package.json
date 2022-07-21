@@ -19,8 +19,8 @@
   "author": "Joe Hildebrand <joe-github@cursive.net>",
   "license": "MIT",
   "devDependencies": {
-    "@peggyjs/eslint-config": "2.0.0",
-    "c8": "7.11.3",
+    "@peggyjs/eslint-config": "3.0.0",
+    "c8": "7.12.0",
     "eslint": "8.20.0",
     "peggy": "2.0.1"
   }
