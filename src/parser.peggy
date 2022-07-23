@@ -99,18 +99,18 @@ Grammar
     }
 
 TopLevelInitializer
-  = "{" value:CodeBlock "}" EOS {
+  = "{" code:CodeBlock "}" EOS {
       return loc({
         type: "top_level_initializer",
-        value,
+        code,
       });
     }
 
 Initializer
-  = value:CodeBlock EOS {
+  = code:CodeBlock EOS {
       return loc({
         type: "initializer",
-        value,
+        code,
       });
     }
 
@@ -251,10 +251,10 @@ RuleReferenceExpression
     }
 
 SemanticPredicateExpression
-  = operator:SemanticPredicateOperator __ value:CodeBlock {
+  = operator:SemanticPredicateOperator __ code:CodeBlock {
       return loc({
         type: OPS_TO_SEMANTIC_PREDICATE_TYPES[operator],
-        value,
+        code,
       });
     }
 

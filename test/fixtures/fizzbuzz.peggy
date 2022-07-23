@@ -41,4 +41,9 @@ number "number without trailing comment"
   = "0x" n:$[0-9a-f]i+ &"\n" { return parseInt(n, 16) }
   / n:$[0-9]+ &"\n" { return parseInt(n, 10) }
 
+deep = one:(two:(three:number _ { return three * 3 }) { return two * 2}) {
+  return -one;
+}
+
 _ = $[ \t]*
+
