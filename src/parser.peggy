@@ -31,6 +31,8 @@
 // [1] http://www.ecma-international.org/publications/standards/Ecma-262.htm
 
 {{
+  // @ts-nocheck
+  // Gr.  Move @ts-nocheck to the top EVERY TIME
   const OPS_TO_PREFIXED_TYPES = {
     "$": "text",
     "&": "simple_and",

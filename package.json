@@ -3,11 +3,14 @@
   "version": "0.0.0",
   "description": "ESLint-style parser for Peggy grammars",
   "main": "lib/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "lint": "eslint . --ext js",
     "parser": "peggy -o lib/parser.js src/parser.peggy",
     "test": "node --test",
-    "coverage": "c8 npm test"
+    "coverage": "c8 npm test",
+    "ts": "tsc",
+    "check": "npm run lint && npm run ts && npm run coverage"
   },
   "keywords": [
     "eslint",
@@ -20,8 +23,10 @@
   "license": "MIT",
   "devDependencies": {
     "@peggyjs/eslint-config": "3.0.0",
+    "@types/eslint": "8.4.5",
     "c8": "7.12.0",
     "eslint": "8.20.0",
-    "peggy": "2.0.1"
+    "peggy": "2.0.1",
+    "typescript": "4.7.4"
   }
 }

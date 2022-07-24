@@ -29,6 +29,9 @@ jobs:
       - name: Check coding standards
         if: matrix.node-version == '18.x' && matrix.os == 'ubuntu-latest'
         run: npm run lint
+      - name: Static analysis - check types
+        if: matrix.node-version == '18.x' && matrix.os == 'ubuntu-latest'
+        run: npm run ts
       - name: Test
         run: npm run coverage
       - uses: codecov/codecov-action@v2
