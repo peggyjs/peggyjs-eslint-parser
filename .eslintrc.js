@@ -2,11 +2,13 @@
 
 module.exports = {
   root: true,
-  extends: "@peggyjs",
+  extends: ["@peggyjs", "@peggyjs/eslint-config/typescript"],
   ignorePatterns: [
+    "coverage/",
     "docs/",
-    "lib/parser.js", // Generated
+    "lib/", // Generated
     "node_modules/",
+    "src/parser.ts", // Generated
   ],
   overrides: [
     {
