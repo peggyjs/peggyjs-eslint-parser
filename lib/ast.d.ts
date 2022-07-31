@@ -1,5 +1,5 @@
-import type * as ESlint from "eslint";
-import type * as EStree from "estree";
+import type ESlint from "eslint";
+import type EStree from "estree";
 /**
  * ESlint uses these for visiting the AST.  We'll do the same in visitor.ts.
  */
@@ -90,7 +90,7 @@ export declare type OneOrMoreExpression = ExpressionExpression<"one_or_more">;
 export declare type GroupExpression = ExpressionExpression<"group">;
 export declare type SemanticAndExpression = CodeExpression<"semantic_and">;
 export declare type SemanticNotExpression = CodeExpression<"semantic_not">;
-interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
+export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
     value: string;
 }
 export declare type RuleReferenceExpression = ValueExpression<"rule_ref">;
@@ -106,6 +106,7 @@ export declare type AnyExpression = BaseNode<"any">;
 export declare type Name = ValueExpression<"name">;
 export declare type Code = ValueExpression<"code">;
 export declare type Equals = BaseNode<"equals">;
+export declare type ValueNode = Code | LiteralExpression | Name | NamedExpression | RuleReferenceExpression;
 export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
 export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
 export declare type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;

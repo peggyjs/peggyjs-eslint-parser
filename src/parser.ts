@@ -6,8 +6,8 @@
 "use strict";
 
 
-  import type * as ESTree from "estree";
   import type * as ast from "./ast";
+  import type ESTree from "estree";
 
   const OPS_TO_PREFIXED_TYPES: Record<string, "text" | "simple_and" | "simple_not"> = {
     "$": "text",

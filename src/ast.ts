@@ -1,5 +1,5 @@
-import type * as ESlint from "eslint";
-import type * as EStree from "estree";
+import type ESlint from "eslint";
+import type EStree from "estree";
 
 /**
  * ESlint uses these for visiting the AST.  We'll do the same in visitor.ts.
@@ -106,7 +106,7 @@ export type GroupExpression = ExpressionExpression<"group">;
 export type SemanticAndExpression = CodeExpression<"semantic_and">;
 export type SemanticNotExpression = CodeExpression<"semantic_not">;
 
-interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
+export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
   value: string;
 }
 
@@ -126,6 +126,13 @@ export type AnyExpression = BaseNode<"any">;
 export type Name = ValueExpression<"name">;
 export type Code = ValueExpression<"code">;
 export type Equals = BaseNode<"equals">;
+
+export type ValueNode
+  = Code
+  | LiteralExpression
+  | Name
+  | NamedExpression
+  | RuleReferenceExpression;
 
 export type PrefixedExpression
   = SimpleAndExpression

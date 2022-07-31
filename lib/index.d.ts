@@ -1,5 +1,5 @@
 import * as visitor from "./visitor.js";
-import type eslint from "eslint";
+import type ESlint from "eslint";
 export { visitor };
 interface parseOptions {
     /**
@@ -10,4 +10,4 @@ interface parseOptions {
 /**
  * Parse Peggy text and return the format that eslint requires.
  */
-export declare function parseForESLint(code: string, options?: parseOptions): eslint.Linter.ESLintParseResult;
+export declare function parseForESLint(code: string, options?: parseOptions): ESlint.Linter.ESLintParseResult;

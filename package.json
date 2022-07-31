@@ -4,7 +4,7 @@
   "description": "ESLint-style parser for Peggy grammars",
   "main": "lib/index.js",
   "scripts": {
-    "parser": "peggy --extra-options-file .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy",
+    "parser": "peggy -c .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy",
     "ts": "tsc",
     "lint": "eslint . --ext js,ts",
     "check": "npm run parser && npm run ts && npm run lint",
