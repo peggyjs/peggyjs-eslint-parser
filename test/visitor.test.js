@@ -4,7 +4,7 @@ const assert = require("assert");
 
 const {
   parseForESLint,
-  Visitor,
+  visitor,
 } = require("../lib/index");
 const test = require("node:test");
 const path = require("path");
@@ -15,7 +15,7 @@ const filePath = path.join(__dirname, "fixtures", "fizzbuzz.peggy");
 test("visit all", async() => {
   const source = await fs.readFile(filePath, "utf8");
   const { ast } = parseForESLint(source, { filePath });
-  const v = new Visitor({
+  const v = new visitor.Visitor({
     "*": (node, opts) => {
       if (opts) {
         if (opts.array) {
@@ -26,6 +26,10 @@ test("visit all", async() => {
       return ["Program"];
     },
     "*:exit": (node, opts) => {
+      if (typeof node !== "object") {
+        console.log("%o", opts);
+        throw new Error("fail");
+      }
       node.path = opts?.thisResult?.join("/");
     },
   });
@@ -71,7 +75,7 @@ test("functions", async() => {
       body,
     });
   }
-  const v = new Visitor({
+  const v = new visitor.Visitor({
     rule() {
       return {};
     },

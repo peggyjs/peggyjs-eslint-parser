@@ -31,30 +31,31 @@
 // [1] http://www.ecma-international.org/publications/standards/Ecma-262.htm
 
 {{
-  const OPS_TO_PREFIXED_TYPES = {
+  import type * as ast from "./ast";
+  import type ESTree from "estree";
+
+  const OPS_TO_PREFIXED_TYPES: Record<string, "text" | "simple_and" | "simple_not"> = {
     "$": "text",
     "&": "simple_and",
     "!": "simple_not"
   };
 
-  const OPS_TO_SUFFIXED_TYPES = {
+  const OPS_TO_SUFFIXED_TYPES: Record<string, "optional" | "zero_or_more" | "one_or_more"> = {
     "?": "optional",
     "*": "zero_or_more",
     "+": "one_or_more"
   };
 
-  const OPS_TO_SEMANTIC_PREDICATE_TYPES = {
+  const OPS_TO_SEMANTIC_PREDICATE_TYPES: Record<string, "semantic_and" | "semantic_not"> = {
     "&": "semantic_and",
     "!": "semantic_not"
   };
 }}
 {
-  // Cannot use Set here because of native IE support.
   const reservedWords = options.reservedWords || [];
+  const comments: ESTree.Comment[] = [];
 
-  const comments = [];
-
-  function loc(node) {
+  function loc(node: Partial<ast.Node>): ast.Node {
     // Convert to estree-style location
     const l = location();
     node.loc = {
@@ -72,7 +73,7 @@
       l.start.offset,
       l.end.offset,
     ];
-    return node;
+    return node as ast.Node;
   }
 }
 // ---- Syntactic Grammar -----
@@ -184,6 +185,7 @@ LabeledExpression
       return loc({
         type: "labeled",
         name,
+        pick: false,
         expression,
       });
     }
@@ -295,7 +297,7 @@ MultiLineComment
 
 MultiLineCommentChars
   = value:$(!"*/" SourceCharacter)* {
-    comments.push(loc({ type: "Block", value }));
+    comments.push(loc({ type: "Block", value }) as unknown as ESTree.Comment);
   }
 
 MultiLineCommentNoLineTerminator
@@ -303,7 +305,7 @@ MultiLineCommentNoLineTerminator
 
 MultiLineCommentNoLineTerminatorChars
   = value:$(!("*/" / LineTerminator) SourceCharacter)* {
-    comments.push(loc({ type: "Block", value }));
+    comments.push(loc({ type: "Block", value }) as unknown as ESTree.Comment);
   }
 
 SingleLineComment
@@ -311,7 +313,7 @@ SingleLineComment
 
 SingleLineCommentChars
   = value:$(!LineTerminator SourceCharacter)* {
-    comments.push(loc({ type: "Line", value }));
+    comments.push(loc({ type: "Line", value }) as unknown as ESTree.Comment);
   }
 
 IdentifierName "identifier"
@@ -386,7 +388,7 @@ CharacterClassMatcher "character class"
     {
       return loc({
         type: "class",
-        parts: parts.filter(part => part !== ""),
+        parts: parts.filter((part:(string|unknown)) => part !== ""),
         inverted: inverted !== null,
         ignoreCase: ignoreCase !== null,
       });

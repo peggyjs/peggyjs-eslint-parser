@@ -28,9 +28,9 @@ jobs:
         run: npm install
       - name: Check coding standards
         if: matrix.node-version == '18.x' && matrix.os == 'ubuntu-latest'
-        run: npm run lint
+        run: npm run check
       - name: Test
-        run: npm run coverage
+        run: npm run ci
       - uses: codecov/codecov-action@v2
         with:
           files: coverage/lcov.info
