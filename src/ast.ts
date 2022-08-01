@@ -131,7 +131,6 @@ export type ValueNode
   = Code
   | LiteralExpression
   | Name
-  | NamedExpression
   | RuleReferenceExpression;
 
 export type PrefixedExpression
