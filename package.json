@@ -6,12 +6,13 @@
   "scripts": {
     "parser": "peggy -c .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy",
     "ts": "tsc",
+    "ts:sourcemap": "tsc --inlineSourceMap",
     "lint": "eslint . --ext js,ts",
-    "check": "npm run parser && npm run ts && npm run lint",
-    "pretest": "npm run check",
-    "test": "node --test",
+    "test": "node -r source-map-support/register --test",
+    "precoverage": "npm run parser && npm run ts:sourcemap",
     "coverage": "c8 npm test",
-    "ci": "node --test"
+    "postcoverage": "npm run ts",
+    "ci": "npm run coverage"
   },
   "keywords": [
     "eslint",
@@ -28,6 +29,7 @@
     "c8": "7.12.0",
     "eslint": "8.20.0",
     "peggy": "2.0.1",
+    "source-map-support": "0.5.21",
     "ts-pegjs": "2.1.0",
     "typescript": "4.7.4"
   }
