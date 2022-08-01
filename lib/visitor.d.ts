@@ -9,9 +9,8 @@ interface VisitorOptions<T> {
     parentResult?: T;
     thisResult?: T;
 }
-declare type VisitorFunction<T, U extends AST.Node> = (node: U, opts?: VisitorOptions<T>) => T | undefined;
+declare type VisitorFunction<T, U extends AST.Node> = (node: U, opts: VisitorOptions<T>) => T | undefined;
 interface VisitorFunctionMap<T> {
-    Program?: VisitorFunction<T, AST.Program>;
     grammar?: VisitorFunction<T, AST.Grammar>;
     top_level_initializer?: VisitorFunction<T, AST.TopLevelInitializer>;
     initializer?: VisitorFunction<T, AST.Initializer>;
@@ -39,7 +38,6 @@ interface VisitorFunctionMap<T> {
     equals?: VisitorFunction<T, AST.Equals>;
     Block?: VisitorFunction<T, EStree.Comment>;
     Line?: VisitorFunction<T, EStree.Comment>;
-    "*"?: VisitorFunction<T, AST.Node>;
     "Program:exit"?: VisitorFunction<T, AST.Program>;
     "grammar:exit"?: VisitorFunction<T, AST.Grammar>;
     "top_level_initializer:exit"?: VisitorFunction<T, AST.TopLevelInitializer>;
@@ -69,6 +67,8 @@ interface VisitorFunctionMap<T> {
     "Block:exit"?: VisitorFunction<T, EStree.Comment>;
     "Line:exit"?: VisitorFunction<T, EStree.Comment>;
     "*:exit"?: VisitorFunction<T, AST.Node>;
+    Program?(node: AST.Program): T | undefined;
+    "*"?(node: AST.Node, opts?: VisitorOptions<T>): T | undefined;
 }
 /**
  * Visit some or all of the nodes in an AST.
