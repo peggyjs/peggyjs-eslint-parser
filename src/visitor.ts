@@ -13,10 +13,9 @@ interface VisitorOptions<T> {
 }
 
 type VisitorFunction<T, U extends AST.Node> =
-  (node: U, opts?: VisitorOptions<T>) => T | undefined;
+  (node: U, opts: VisitorOptions<T>) => T | undefined;
 
 interface VisitorFunctionMap<T> {
-  Program?: VisitorFunction<T, AST.Program>;
   grammar?: VisitorFunction<T, AST.Grammar>;
   top_level_initializer?: VisitorFunction<T, AST.TopLevelInitializer>;
   initializer?: VisitorFunction<T, AST.Initializer>;
@@ -44,7 +43,6 @@ interface VisitorFunctionMap<T> {
   equals?: VisitorFunction<T, AST.Equals>;
   Block?: VisitorFunction<T, EStree.Comment>;
   Line?: VisitorFunction<T, EStree.Comment>;
-  "*"?: VisitorFunction<T, AST.Node>;
 
   "Program:exit"?: VisitorFunction<T, AST.Program>;
   "grammar:exit"?: VisitorFunction<T, AST.Grammar>;
@@ -75,6 +73,9 @@ interface VisitorFunctionMap<T> {
   "Block:exit"?: VisitorFunction<T, EStree.Comment>;
   "Line:exit"?: VisitorFunction<T, EStree.Comment>;
   "*:exit"?: VisitorFunction<T, AST.Node>;
+
+  Program?(node: AST.Program): T | undefined;
+  "*"?(node: AST.Node, opts?: VisitorOptions<T>): T | undefined;
 }
 
 /**
@@ -85,7 +86,7 @@ export class Visitor<T> {
 
   private functions: VisitorFunctionMap<T>;
 
-  private star?: VisitorFunction<T, AST.Node>;
+  private star?: (node: AST.Node, opts?: VisitorOptions<T>) => T | undefined;
 
   private starExit?: VisitorFunction<T, AST.Node>;
 
