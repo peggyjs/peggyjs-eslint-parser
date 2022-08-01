@@ -372,13 +372,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c39 = ")";
   const peg$c40 = peg$literalExpectation(")", false);
   const peg$c41 = function(expression: any): any {
-        // The purpose of the "group" AST node is just to isolate label scope. We
-        // don't need to put it around nodes that can't contain any labels or
-        // nodes that already isolate label scope themselves. This leaves us with
-        // "labeled" and "sequence".
-        return expression.type === "labeled" || expression.type === "sequence"
-            ? loc({ type: "group", expression })
-            : expression;
+        return loc({ type: "group", expression });
       };
   const peg$c42 = "=";
   const peg$c43 = peg$literalExpectation("=", false);
