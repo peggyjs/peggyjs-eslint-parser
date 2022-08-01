@@ -61,7 +61,7 @@ export interface Rule extends BaseNode<"rule"> {
     expression: Expression;
 }
 export interface NamedExpression extends BaseNode<"named"> {
-    value: string;
+    name: Name;
     expression: Expression;
 }
 export interface ChoiceExpression extends BaseNode<"choice"> {

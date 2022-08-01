@@ -10,7 +10,7 @@ export const visitorKeys = {
   top_level_initializer: ["code"],
   initializer: ["code"],
   rule: ["name", "equals", "expression"],
-  named: ["expression"],
+  named: ["name", "expression"],
   choice: ["alternatives"],
   action: ["expression", "code"],
   sequence: ["elements"],
@@ -70,7 +70,7 @@ export interface Rule extends BaseNode<"rule"> {
 }
 
 export interface NamedExpression extends BaseNode<"named"> {
-  value: string;
+  name: Name;
   expression: Expression;
 }
 

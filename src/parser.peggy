@@ -117,7 +117,7 @@ Initializer
 
 Rule
   = name:IdentifierName __
-    displayName:(@StringLiteral __)?
+    displayName:(@DisplayName __)?
     equals:Equals __
     expression:Expression EOS
     {
@@ -128,12 +128,20 @@ Rule
         expression: displayName !== null
           ? loc({
               type: "named",
-              value: displayName,
+              name: displayName,
               expression,
             })
           : expression,
       });
     }
+
+DisplayName
+  = value:StringLiteral {
+    return loc({
+      type: "name",
+      value,
+    });
+  }
 
 Expression
   = ChoiceExpression
