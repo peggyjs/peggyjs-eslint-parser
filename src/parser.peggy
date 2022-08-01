@@ -246,13 +246,7 @@ PrimaryExpression
   / RuleReferenceExpression
   / SemanticPredicateExpression
   / "(" __ expression:Expression __ ")" {
-      // The purpose of the "group" AST node is just to isolate label scope. We
-      // don't need to put it around nodes that can't contain any labels or
-      // nodes that already isolate label scope themselves. This leaves us with
-      // "labeled" and "sequence".
-      return expression.type === "labeled" || expression.type === "sequence"
-          ? loc({ type: "group", expression })
-          : expression;
+      return loc({ type: "group", expression });
     }
 
 RuleReferenceExpression
