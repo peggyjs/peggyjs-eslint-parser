@@ -24,7 +24,7 @@ export const visitorKeys = {
   group: ["expression"],
   semantic_and: ["code"],
   semantic_not: ["code"],
-  rule_ref: ["value"],
+  rule_ref: ["name"],
   literal: [],
   class: [],
   any: [],
@@ -111,7 +111,9 @@ export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
   value: string;
 }
 
-export type RuleReferenceExpression = ValueExpression<"rule_ref">;
+export interface RuleReferenceExpression extends BaseNode<"rule_ref"> {
+  name: Name;
+}
 
 export interface LiteralExpression extends ValueExpression<"literal"> {
   ignoreCase: boolean;
@@ -135,8 +137,7 @@ export type ValueNode
   = Code
   | LiteralExpression
   | Name
-  | Punctuation
-  | RuleReferenceExpression;
+  | Punctuation;
 
 export type PrefixedExpression
   = SimpleAndExpression

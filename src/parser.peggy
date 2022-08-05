@@ -251,8 +251,8 @@ PrimaryExpression
     }
 
 RuleReferenceExpression
-  = value:IdentifierName !(__ (StringLiteral __)? "=") {
-      return loc({ type: "rule_ref", value });
+  = name:IdentifierName !(__ (StringLiteral __)? "=") {
+      return loc({ type: "rule_ref", name });
     }
 
 SemanticPredicateExpression

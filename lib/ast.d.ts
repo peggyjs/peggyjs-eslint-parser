@@ -94,7 +94,9 @@ export declare type SemanticNotExpression = CodeExpression<"semantic_not">;
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
     value: string;
 }
-export declare type RuleReferenceExpression = ValueExpression<"rule_ref">;
+export interface RuleReferenceExpression extends BaseNode<"rule_ref"> {
+    name: Name;
+}
 export interface LiteralExpression extends ValueExpression<"literal"> {
     ignoreCase: boolean;
 }
@@ -110,7 +112,7 @@ export interface Code extends ValueExpression<"code"> {
     open: Punctuation;
     close: Punctuation;
 }
-export declare type ValueNode = Code | LiteralExpression | Name | Punctuation | RuleReferenceExpression;
+export declare type ValueNode = Code | LiteralExpression | Name | Punctuation;
 export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
 export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
 export declare type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;

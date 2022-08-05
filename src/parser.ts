@@ -375,8 +375,8 @@ function peg$parse(input: string, options?: IParseOptions) {
       };
   const peg$c40 = "=";
   const peg$c41 = peg$literalExpectation("=", false);
-  const peg$c42 = function(value: any): any {
-        return loc({ type: "rule_ref", value });
+  const peg$c42 = function(name: any): any {
+        return loc({ type: "rule_ref", name });
       };
   const peg$c43 = function(operator: any, code: any): any {
         return loc({
