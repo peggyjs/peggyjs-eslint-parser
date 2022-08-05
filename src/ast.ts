@@ -25,7 +25,8 @@ export const visitorKeys = {
   semantic_and: ["code"],
   semantic_not: ["code"],
   rule_ref: ["name"],
-  literal: [],
+  literal: ["before", "after"],
+  display: ["before", "after"],
   class: [],
   any: [],
   name: [],
@@ -115,9 +116,17 @@ export interface RuleReferenceExpression extends BaseNode<"rule_ref"> {
   name: Name;
 }
 
-export interface LiteralExpression extends ValueExpression<"literal"> {
+interface QuotedString<T extends NodeTypes> extends ValueExpression<T> {
+  before: Punctuation;
+  after: Punctuation;
+  raw: string;
+}
+
+export interface LiteralExpression extends QuotedString<"literal"> {
   ignoreCase: boolean;
 }
+
+export type DisplayName = QuotedString<"display">;
 
 export interface ClassExpression extends BaseNode<"class"> {
   parts: (string[] | string)[];
@@ -135,6 +144,7 @@ export interface Code extends ValueExpression<"code"> {
 
 export type ValueNode
   = Code
+  | DisplayName
   | LiteralExpression
   | Name
   | Punctuation;
@@ -173,6 +183,7 @@ export type Expression
 
 export type Node
   = Code
+  | DisplayName
   | EStree.Comment
   | Expression
   | Grammar

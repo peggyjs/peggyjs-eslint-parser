@@ -136,10 +136,10 @@ Rule
     }
 
 DisplayName
-  = value:StringLiteral {
+  = lit:StringLiteral {
     return loc({
-      type: "name",
-      value,
+      type: "display",
+      ...lit,
     });
   }
 
@@ -360,22 +360,48 @@ UnicodeConnectorPunctuation
   = Pc
 
 LiteralMatcher "literal"
-  = value:StringLiteral ignoreCase:"i"? {
+  = lit:StringLiteral ignoreCase:"i"? {
       return loc({
         type: "literal",
-        value,
+        ...lit,
         ignoreCase: ignoreCase !== null,
       });
     }
 
 StringLiteral "string"
-  = '"' chars:DoubleStringCharacter* '"' { return chars.join(""); }
-  / "'" chars:SingleStringCharacter* "'" { return chars.join(""); }
+  = before:Dquote value:DoubleRawCooked after:Dquote {
+    return {
+      ...value,
+      before,
+      after,
+    }
+  }
+  / before:Squote value:SingleRawCooked after:Squote {
+    return {
+      ...value,
+      before,
+      after,
+    }
+  }
+
+DoubleRawCooked = chars:DoubleStringCharacter* {
+  return {
+    value: chars.join(""),
+    raw: text(),
+  }
+}
 
 DoubleStringCharacter
   = $(!('"' / "\\" / LineTerminator) SourceCharacter)
   / "\\" @EscapeSequence
   / LineContinuation
+
+SingleRawCooked = chars: SingleStringCharacter* {
+  return {
+    value: chars.join(""),
+    raw: text(),
+  }
+}
 
 SingleStringCharacter
   = $(!("'" / "\\" / LineTerminator) SourceCharacter)
@@ -547,6 +573,12 @@ OpenCurly
 
 CloseCurly
   = value:"}" { return loc({ type: "punc", value }); }
+
+Squote
+  = value:"'" { return loc({ type: "punc", value }); }
+
+Dquote
+  = value:'"' { return loc({ type: "punc", value }); }
 
 __
   = (WhiteSpace / LineTerminatorSequence / Comment)*

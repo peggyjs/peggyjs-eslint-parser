@@ -8,6 +8,7 @@ module.exports = {
     CharacterClassMatcher: "ast.Expression",
     ChoiceExpression: "ast.Expression",
     CloseCurly: "ast.Punctuation",
+    Dquote: "ast.Punctuation",
     Equals: "ast.Punctuation",
     Expression: "ast.Expression",
     Grammar: "ast.Grammar",
@@ -24,6 +25,7 @@ module.exports = {
     SemanticPredicateExpression: "ast.Expression",
     SequenceExpression: "ast.Expression",
     Slash: "ast.Punctuation",
+    Squote: "ast.Punctuation",
     SuffixedExpression: "ast.Expression",
     TopLevelInitializer: "ast.TopLevelInitializer",
   }
