@@ -35,7 +35,7 @@ interface VisitorFunctionMap<T> {
     any?: VisitorFunction<T, AST.AnyExpression>;
     name?: VisitorFunction<T, AST.NamedExpression>;
     code?: VisitorFunction<T, AST.Code>;
-    equals?: VisitorFunction<T, AST.Equals>;
+    punc?: VisitorFunction<T, AST.Punctuation>;
     Block?: VisitorFunction<T, EStree.Comment>;
     Line?: VisitorFunction<T, EStree.Comment>;
     "Program:exit"?: VisitorFunction<T, AST.Program>;
@@ -63,7 +63,7 @@ interface VisitorFunctionMap<T> {
     "any:exit"?: VisitorFunction<T, AST.AnyExpression>;
     "name:exit"?: VisitorFunction<T, AST.NamedExpression>;
     "code:exit"?: VisitorFunction<T, AST.Code>;
-    "equals:exit"?: VisitorFunction<T, AST.Equals>;
+    "punc:exit"?: VisitorFunction<T, AST.Punctuation>;
     "Block:exit"?: VisitorFunction<T, EStree.Comment>;
     "Line:exit"?: VisitorFunction<T, EStree.Comment>;
     "*:exit"?: VisitorFunction<T, AST.Node>;

@@ -28,8 +28,8 @@ export declare const visitorKeys: {
     class: never[];
     any: never[];
     name: never[];
-    code: never[];
-    equals: never[];
+    code: string[];
+    punc: never[];
     Block: never[];
     Line: never[];
 };
@@ -57,7 +57,7 @@ export declare type TopLevelInitializer = CodeExpression<"top_level_initializer"
 export declare type Initializer = CodeExpression<"initializer">;
 export interface Rule extends BaseNode<"rule"> {
     name: Name;
-    equals: Equals;
+    equals: Punctuation;
     expression: Expression;
 }
 export interface NamedExpression extends BaseNode<"named"> {
@@ -66,6 +66,7 @@ export interface NamedExpression extends BaseNode<"named"> {
 }
 export interface ChoiceExpression extends BaseNode<"choice"> {
     alternatives: Expression[];
+    slashes: Punctuation[];
 }
 export interface ActionExpression extends BaseNode<"action"> {
     expression: Expression;
@@ -104,13 +105,16 @@ export interface ClassExpression extends BaseNode<"class"> {
 }
 export declare type AnyExpression = BaseNode<"any">;
 export declare type Name = ValueExpression<"name">;
-export declare type Code = ValueExpression<"code">;
-export declare type Equals = BaseNode<"equals">;
-export declare type ValueNode = Code | LiteralExpression | Name | RuleReferenceExpression;
+export declare type Punctuation = ValueExpression<"punc">;
+export interface Code extends ValueExpression<"code"> {
+    open: Punctuation;
+    close: Punctuation;
+}
+export declare type ValueNode = Code | LiteralExpression | Name | Punctuation | RuleReferenceExpression;
 export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
 export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
 export declare type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;
 export declare type PrimaryExpression = AnyExpression | ClassExpression | GroupExpression | LiteralExpression | RuleReferenceExpression | SemanticPredicateExpression;
 export declare type Expression = ActionExpression | ChoiceExpression | LabeledExpression | NamedExpression | PrefixedExpression | PrimaryExpression | SequenceExpression | SuffixedExpression;
-export declare type Node = Code | Equals | EStree.Comment | Expression | Grammar | Initializer | Name | Program | Rule | TopLevelInitializer;
+export declare type Node = Code | EStree.Comment | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
 export {};
