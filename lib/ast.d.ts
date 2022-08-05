@@ -24,7 +24,8 @@ export declare const visitorKeys: {
     semantic_and: string[];
     semantic_not: string[];
     rule_ref: string[];
-    literal: never[];
+    literal: string[];
+    display: string[];
     class: never[];
     any: never[];
     name: never[];
@@ -97,9 +98,15 @@ export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
 export interface RuleReferenceExpression extends BaseNode<"rule_ref"> {
     name: Name;
 }
-export interface LiteralExpression extends ValueExpression<"literal"> {
+interface QuotedString<T extends NodeTypes> extends ValueExpression<T> {
+    before: Punctuation;
+    after: Punctuation;
+    raw: string;
+}
+export interface LiteralExpression extends QuotedString<"literal"> {
     ignoreCase: boolean;
 }
+export declare type DisplayName = QuotedString<"display">;
 export interface ClassExpression extends BaseNode<"class"> {
     parts: (string[] | string)[];
     inverted: boolean;
@@ -112,11 +119,11 @@ export interface Code extends ValueExpression<"code"> {
     open: Punctuation;
     close: Punctuation;
 }
-export declare type ValueNode = Code | LiteralExpression | Name | Punctuation;
+export declare type ValueNode = Code | DisplayName | LiteralExpression | Name | Punctuation;
 export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
 export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
 export declare type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;
 export declare type PrimaryExpression = AnyExpression | ClassExpression | GroupExpression | LiteralExpression | RuleReferenceExpression | SemanticPredicateExpression;
 export declare type Expression = ActionExpression | ChoiceExpression | LabeledExpression | NamedExpression | PrefixedExpression | PrimaryExpression | SequenceExpression | SuffixedExpression;
-export declare type Node = Code | EStree.Comment | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
+export declare type Node = Code | DisplayName | EStree.Comment | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
 export {};
