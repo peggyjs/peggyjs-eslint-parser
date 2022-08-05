@@ -11,7 +11,7 @@ export const visitorKeys = {
   initializer: ["code"],
   rule: ["name", "equals", "expression"],
   named: ["name", "expression"],
-  choice: ["alternatives"],
+  choice: ["alternatives", "slashes"],
   action: ["expression", "code"],
   sequence: ["elements"],
   labeled: ["name", "expression"],
@@ -29,8 +29,8 @@ export const visitorKeys = {
   class: [],
   any: [],
   name: [],
-  code: [],
-  equals: [],
+  code: ["open", "close"],
+  punc: [],
   Block: [],
   Line: [],
 };
@@ -65,7 +65,7 @@ export type Initializer = CodeExpression<"initializer">;
 
 export interface Rule extends BaseNode<"rule"> {
   name: Name;
-  equals: Equals;
+  equals: Punctuation;
   expression: Expression;
 }
 
@@ -76,6 +76,7 @@ export interface NamedExpression extends BaseNode<"named"> {
 
 export interface ChoiceExpression extends BaseNode<"choice"> {
   alternatives: Expression[];
+  slashes: Punctuation[];
 }
 
 export interface ActionExpression extends BaseNode<"action"> {
@@ -124,13 +125,17 @@ export interface ClassExpression extends BaseNode<"class"> {
 
 export type AnyExpression = BaseNode<"any">;
 export type Name = ValueExpression<"name">;
-export type Code = ValueExpression<"code">;
-export type Equals = BaseNode<"equals">;
+export type Punctuation = ValueExpression<"punc">;
+export interface Code extends ValueExpression<"code"> {
+  open: Punctuation;
+  close: Punctuation;
+}
 
 export type ValueNode
   = Code
   | LiteralExpression
   | Name
+  | Punctuation
   | RuleReferenceExpression;
 
 export type PrefixedExpression
@@ -167,12 +172,12 @@ export type Expression
 
 export type Node
   = Code
-  | Equals
   | EStree.Comment
   | Expression
   | Grammar
   | Initializer
   | Name
   | Program
+  | Punctuation
   | Rule
   | TopLevelInitializer;

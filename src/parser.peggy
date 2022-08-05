@@ -147,11 +147,12 @@ Expression
   = ChoiceExpression
 
 ChoiceExpression
-  = head:ActionExpression tail:(__ "/" __ @ActionExpression)* {
+  = head:ActionExpression tail:(__ @Slash __ @ActionExpression)* {
       return tail.length > 0
         ? loc({
             type: "choice",
-            alternatives: [head, ...tail],
+            alternatives: [head, ...tail.map((v: ast.Node[]) => v[1])],
+            slashes: tail.map((v: ast.Node[]) => v[0]),
           })
         : head;
     }
@@ -465,7 +466,11 @@ AnyMatcher
   = "." { return loc({ type: "any" }); }
 
 CodeBlock "code block"
-  = "{" @BareCodeBlock "}"
+  = open:OpenCurly bare:BareCodeBlock close:CloseCurly {
+    bare.open = open;
+    bare.close = close;
+    return bare;
+  }
 
 BareCodeBlock
   = value:Code { return loc({ type: "code", value }); }
@@ -532,10 +537,17 @@ Zs = [\u0020\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]
 // Skipped
 
 Equals
-  = "=" { return loc({
-      type: "equals",
-    });
-  }
+  = value:"=" { return loc({type: "punc", value}); }
+
+Slash
+  = value:"/" { return loc({ type: "punc", value }); }
+
+OpenCurly
+  = value:"{" { return loc({ type: "punc", value }); }
+
+CloseCurly
+  = value:"}" { return loc({ type: "punc", value }); }
+
 __
   = (WhiteSpace / LineTerminatorSequence / Comment)*
 
