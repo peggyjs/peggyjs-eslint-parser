@@ -37,6 +37,7 @@ export declare const visitorKeys: {
 export declare type NodeTypes = keyof typeof visitorKeys;
 export interface BaseNode<T extends NodeTypes> {
     type: T;
+    parent?: Node;
     loc: EStree.SourceLocation;
     range: [number, number];
 }
