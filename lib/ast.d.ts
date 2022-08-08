@@ -40,6 +40,19 @@ export interface BaseNode<T extends NodeTypes> {
     loc: EStree.SourceLocation;
     range: [number, number];
 }
+interface Coded {
+    code: Code;
+}
+interface Bracketed {
+    open: Punctuation;
+    close: Punctuation;
+}
+interface Op {
+    operator: Punctuation;
+}
+interface ExpressionExpression<T extends NodeTypes> extends BaseNode<T> {
+    expression: Expression;
+}
 export interface Program extends BaseNode<"Program"> {
     sourceType: "peggy";
     body: Grammar;
@@ -51,11 +64,8 @@ export interface Grammar extends BaseNode<"grammar"> {
     initializer?: Initializer;
     rules: Rule[];
 }
-interface CodeExpression<T extends NodeTypes> extends BaseNode<T> {
-    code: Code;
-}
-export declare type TopLevelInitializer = CodeExpression<"top_level_initializer">;
-export declare type Initializer = CodeExpression<"initializer">;
+export declare type TopLevelInitializer = BaseNode<"top_level_initializer"> & Coded;
+export declare type Initializer = BaseNode<"initializer"> & Coded;
 export interface Rule extends BaseNode<"rule"> {
     name: Name;
     equals: Punctuation;
@@ -69,29 +79,24 @@ export interface ChoiceExpression extends BaseNode<"choice"> {
     alternatives: Expression[];
     slashes: Punctuation[];
 }
-export interface ActionExpression extends BaseNode<"action"> {
-    expression: Expression;
-    code: Code;
-}
+export declare type ActionExpression = Coded & ExpressionExpression<"action">;
 export interface SequenceExpression extends BaseNode<"sequence"> {
     elements: Expression[];
-}
-interface ExpressionExpression<T extends NodeTypes> extends BaseNode<T> {
-    expression: Expression;
 }
 export interface LabeledExpression extends ExpressionExpression<"labeled"> {
     name: Name;
     pick: boolean;
 }
-export declare type TextExpression = ExpressionExpression<"text">;
-export declare type SimpleAndExpression = ExpressionExpression<"simple_and">;
-export declare type SimpleNotExpression = ExpressionExpression<"simple_not">;
-export declare type OptionalExpression = ExpressionExpression<"optional">;
-export declare type ZeroOrMoreExpression = ExpressionExpression<"zero_or_more">;
-export declare type OneOrMoreExpression = ExpressionExpression<"one_or_more">;
-export declare type GroupExpression = ExpressionExpression<"group">;
-export declare type SemanticAndExpression = CodeExpression<"semantic_and">;
-export declare type SemanticNotExpression = CodeExpression<"semantic_not">;
+declare type OperatorExpression<T extends NodeTypes> = ExpressionExpression<T> & Op;
+export declare type TextExpression = OperatorExpression<"text">;
+export declare type SimpleAndExpression = OperatorExpression<"simple_and">;
+export declare type SimpleNotExpression = OperatorExpression<"simple_not">;
+export declare type OptionalExpression = OperatorExpression<"optional">;
+export declare type ZeroOrMoreExpression = OperatorExpression<"zero_or_more">;
+export declare type OneOrMoreExpression = OperatorExpression<"one_or_more">;
+export declare type SemanticAndExpression = Coded & OperatorExpression<"semantic_and">;
+export declare type SemanticNotExpression = Coded & OperatorExpression<"semantic_not">;
+export declare type GroupExpression = Bracketed & ExpressionExpression<"group">;
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
     value: string;
 }
@@ -115,10 +120,7 @@ export interface ClassExpression extends BaseNode<"class"> {
 export declare type AnyExpression = BaseNode<"any">;
 export declare type Name = ValueExpression<"name">;
 export declare type Punctuation = ValueExpression<"punc">;
-export interface Code extends ValueExpression<"code"> {
-    open: Punctuation;
-    close: Punctuation;
-}
+export declare type Code = Bracketed & ValueExpression<"code">;
 export declare type ValueNode = Code | DisplayName | LiteralExpression | Name | Punctuation;
 export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
 export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;

@@ -27,7 +27,7 @@
     "@peggyjs/eslint-config": "3.0.0",
     "@types/eslint": "8.4.5",
     "c8": "7.12.0",
-    "eslint": "8.20.0",
+    "eslint": "8.21.0",
     "peggy": "2.0.1",
     "source-map-support": "0.5.21",
     "ts-pegjs": "2.1.0",

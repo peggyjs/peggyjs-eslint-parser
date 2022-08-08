@@ -215,30 +215,28 @@ LabelColon
 PrefixedExpression
   = operator:PrefixedOperator __ expression:SuffixedExpression {
       return loc({
-        type: OPS_TO_PREFIXED_TYPES[operator],
+        type: OPS_TO_PREFIXED_TYPES[operator.value],
         expression,
+        operator
       });
     }
   / SuffixedExpression
 
 PrefixedOperator
-  = "$"
-  / "&"
-  / "!"
+  = value:("$" / "&" / "!") { return loc({ type: "punc", value })}
 
 SuffixedExpression
   = expression:PrimaryExpression __ operator:SuffixedOperator {
       return loc({
-        type: OPS_TO_SUFFIXED_TYPES[operator],
+        type: OPS_TO_SUFFIXED_TYPES[operator.value],
         expression,
+        operator
       });
     }
   / PrimaryExpression
 
 SuffixedOperator
-  = "?"
-  / "*"
-  / "+"
+  = value:("?" / "*" / "+") { return loc({ type: "punc", value })}
 
 PrimaryExpression
   = LiteralMatcher
@@ -246,8 +244,8 @@ PrimaryExpression
   / AnyMatcher
   / RuleReferenceExpression
   / SemanticPredicateExpression
-  / "(" __ expression:Expression __ ")" {
-      return loc({ type: "group", expression });
+  / open:OpenParen __ expression:Expression __ close:CloseParen {
+      return loc({ type: "group", expression, open, close });
     }
 
 RuleReferenceExpression
@@ -258,14 +256,14 @@ RuleReferenceExpression
 SemanticPredicateExpression
   = operator:SemanticPredicateOperator __ code:CodeBlock {
       return loc({
-        type: OPS_TO_SEMANTIC_PREDICATE_TYPES[operator],
+        type: OPS_TO_SEMANTIC_PREDICATE_TYPES[operator.value],
         code,
+        operator
       });
     }
 
 SemanticPredicateOperator
-  = "&"
-  / "!"
+  = value:("&" / "!") { return loc({ type: "punc", value }); }
 
 // ---- Lexical Grammar -----
 
@@ -573,6 +571,12 @@ OpenCurly
 
 CloseCurly
   = value:"}" { return loc({ type: "punc", value }); }
+
+OpenParen
+  = value:"(" { return loc({ type: "punc", value }); }
+
+CloseParen
+  = value:")" { return loc({ type: "punc", value }); }
 
 Squote
   = value:"'" { return loc({ type: "punc", value }); }
