@@ -94,8 +94,8 @@ export declare type SimpleNotExpression = OperatorExpression<"simple_not">;
 export declare type OptionalExpression = OperatorExpression<"optional">;
 export declare type ZeroOrMoreExpression = OperatorExpression<"zero_or_more">;
 export declare type OneOrMoreExpression = OperatorExpression<"one_or_more">;
-export declare type SemanticAndExpression = Coded & OperatorExpression<"semantic_and">;
-export declare type SemanticNotExpression = Coded & OperatorExpression<"semantic_not">;
+export declare type SemanticAndExpression = BaseNode<"semantic_and"> & Coded & Op;
+export declare type SemanticNotExpression = BaseNode<"semantic_not"> & Coded & Op;
 export declare type GroupExpression = Bracketed & ExpressionExpression<"group">;
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
     value: string;

@@ -111,8 +111,8 @@ export type SimpleNotExpression = OperatorExpression<"simple_not">;
 export type OptionalExpression = OperatorExpression<"optional">;
 export type ZeroOrMoreExpression = OperatorExpression<"zero_or_more">;
 export type OneOrMoreExpression = OperatorExpression<"one_or_more">;
-export type SemanticAndExpression = Coded & OperatorExpression<"semantic_and">;
-export type SemanticNotExpression = Coded & OperatorExpression<"semantic_not">;
+export type SemanticAndExpression = BaseNode<"semantic_and"> & Coded & Op;
+export type SemanticNotExpression = BaseNode<"semantic_not"> & Coded & Op;
 export type GroupExpression = Bracketed & ExpressionExpression<"group">;
 
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
