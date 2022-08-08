@@ -35,6 +35,12 @@ test("visit all", async() => {
   });
   v.visit(ast);
 
+  // If needed:
+  // console.log(require("util").inspect(ast, {
+  //   depth: Infinity,
+  //   colors: process.stdout.isTTY,
+  // }));
+
   // Manually visit, and make sure each node has a path.
   function testVisit(o) {
     if (typeof o === "object") {

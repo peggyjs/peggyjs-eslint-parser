@@ -15,15 +15,15 @@ export const visitorKeys = {
   action: ["expression", "code"],
   sequence: ["elements"],
   labeled: ["name", "expression"],
-  text: ["expression"],
-  simple_and: ["expression"],
-  simple_not: ["expression"],
-  optional: ["expression"],
-  zero_or_more: ["expression"],
-  one_or_more: ["expression"],
-  group: ["expression"],
-  semantic_and: ["code"],
-  semantic_not: ["code"],
+  text: ["operator", "expression"],
+  simple_and: ["operator", "expression"],
+  simple_not: ["operator", "expression"],
+  optional: ["expression", "operator"],
+  zero_or_more: ["expression", "operator"],
+  one_or_more: ["expression", "operator"],
+  group: ["open", "expression", "close"],
+  semantic_and: ["operator", "code"],
+  semantic_not: ["operator", "code"],
   rule_ref: ["name"],
   literal: ["before", "after"],
   display: ["before", "after"],
@@ -44,6 +44,23 @@ export interface BaseNode<T extends NodeTypes> {
   range: [number, number];
 }
 
+interface Coded {
+  code: Code;
+}
+
+interface Bracketed {
+  open: Punctuation;
+  close: Punctuation;
+}
+
+interface Op {
+  operator: Punctuation;
+}
+
+interface ExpressionExpression<T extends NodeTypes> extends BaseNode<T> {
+  expression: Expression;
+}
+
 export interface Program extends BaseNode<"Program"> {
   sourceType: "peggy";
   body: Grammar;
@@ -57,12 +74,8 @@ export interface Grammar extends BaseNode<"grammar"> {
   rules: Rule[];
 }
 
-interface CodeExpression<T extends NodeTypes> extends BaseNode<T> {
-  code: Code;
-}
-
-export type TopLevelInitializer = CodeExpression<"top_level_initializer">;
-export type Initializer = CodeExpression<"initializer">;
+export type TopLevelInitializer = BaseNode<"top_level_initializer"> & Coded;
+export type Initializer = BaseNode<"initializer"> & Coded;
 
 export interface Rule extends BaseNode<"rule"> {
   name: Name;
@@ -80,17 +93,10 @@ export interface ChoiceExpression extends BaseNode<"choice"> {
   slashes: Punctuation[];
 }
 
-export interface ActionExpression extends BaseNode<"action"> {
-  expression: Expression;
-  code: Code;
-}
+export type ActionExpression = Coded & ExpressionExpression<"action">;
 
 export interface SequenceExpression extends BaseNode<"sequence"> {
   elements: Expression[];
-}
-
-interface ExpressionExpression<T extends NodeTypes> extends BaseNode<T> {
-  expression: Expression;
 }
 
 export interface LabeledExpression extends ExpressionExpression<"labeled"> {
@@ -98,15 +104,16 @@ export interface LabeledExpression extends ExpressionExpression<"labeled"> {
   pick: boolean;
 }
 
-export type TextExpression = ExpressionExpression<"text">;
-export type SimpleAndExpression = ExpressionExpression<"simple_and">;
-export type SimpleNotExpression = ExpressionExpression<"simple_not">;
-export type OptionalExpression = ExpressionExpression<"optional">;
-export type ZeroOrMoreExpression = ExpressionExpression<"zero_or_more">;
-export type OneOrMoreExpression = ExpressionExpression<"one_or_more">;
-export type GroupExpression = ExpressionExpression<"group">;
-export type SemanticAndExpression = CodeExpression<"semantic_and">;
-export type SemanticNotExpression = CodeExpression<"semantic_not">;
+type OperatorExpression<T extends NodeTypes> = ExpressionExpression<T> & Op;
+export type TextExpression = OperatorExpression<"text">;
+export type SimpleAndExpression = OperatorExpression<"simple_and">;
+export type SimpleNotExpression = OperatorExpression<"simple_not">;
+export type OptionalExpression = OperatorExpression<"optional">;
+export type ZeroOrMoreExpression = OperatorExpression<"zero_or_more">;
+export type OneOrMoreExpression = OperatorExpression<"one_or_more">;
+export type SemanticAndExpression = Coded & OperatorExpression<"semantic_and">;
+export type SemanticNotExpression = Coded & OperatorExpression<"semantic_not">;
+export type GroupExpression = Bracketed & ExpressionExpression<"group">;
 
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
   value: string;
@@ -137,10 +144,7 @@ export interface ClassExpression extends BaseNode<"class"> {
 export type AnyExpression = BaseNode<"any">;
 export type Name = ValueExpression<"name">;
 export type Punctuation = ValueExpression<"punc">;
-export interface Code extends ValueExpression<"code"> {
-  open: Punctuation;
-  close: Punctuation;
-}
+export type Code = Bracketed & ValueExpression<"code">;
 
 export type ValueNode
   = Code
