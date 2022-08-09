@@ -1,6 +1,5 @@
 import * as AST from "./ast";
 import type ESlint from "eslint";
-import type EStree from "estree";
 export type { AST };
 interface VisitorOptions<T> {
     name?: string;
@@ -37,8 +36,8 @@ interface VisitorFunctionMap<T> {
     name?: VisitorFunction<T, AST.NamedExpression>;
     code?: VisitorFunction<T, AST.Code>;
     punc?: VisitorFunction<T, AST.Punctuation>;
-    Block?: VisitorFunction<T, EStree.Comment>;
-    Line?: VisitorFunction<T, EStree.Comment>;
+    Block?: VisitorFunction<T, AST.BlockComment>;
+    Line?: VisitorFunction<T, AST.LineComment>;
     "Program:exit"?: VisitorFunction<T, AST.Program>;
     "grammar:exit"?: VisitorFunction<T, AST.Grammar>;
     "top_level_initializer:exit"?: VisitorFunction<T, AST.TopLevelInitializer>;
@@ -66,8 +65,8 @@ interface VisitorFunctionMap<T> {
     "name:exit"?: VisitorFunction<T, AST.NamedExpression>;
     "code:exit"?: VisitorFunction<T, AST.Code>;
     "punc:exit"?: VisitorFunction<T, AST.Punctuation>;
-    "Block:exit"?: VisitorFunction<T, EStree.Comment>;
-    "Line:exit"?: VisitorFunction<T, EStree.Comment>;
+    "Block:exit"?: VisitorFunction<T, AST.BlockComment>;
+    "Line:exit"?: VisitorFunction<T, AST.LineComment>;
     "*:exit"?: VisitorFunction<T, AST.Node>;
     Program?(node: AST.Program): T | undefined;
     "*"?(node: AST.Node, opts?: VisitorOptions<T>): T | undefined;

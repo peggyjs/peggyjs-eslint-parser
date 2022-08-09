@@ -105,15 +105,16 @@ export interface LabeledExpression extends ExpressionExpression<"labeled"> {
   pick: boolean;
 }
 
-type OperatorExpression<T extends NodeTypes> = ExpressionExpression<T> & Op;
-export type TextExpression = OperatorExpression<"text">;
-export type SimpleAndExpression = OperatorExpression<"simple_and">;
-export type SimpleNotExpression = OperatorExpression<"simple_not">;
-export type OptionalExpression = OperatorExpression<"optional">;
-export type ZeroOrMoreExpression = OperatorExpression<"zero_or_more">;
-export type OneOrMoreExpression = OperatorExpression<"one_or_more">;
+type OpEx<T extends NodeTypes> = ExpressionExpression<T> & Op;
+export type TextExpression = OpEx<"text">;
+export type SimpleAndExpression = OpEx<"simple_and">;
+export type SimpleNotExpression = OpEx<"simple_not">;
+export type OptionalExpression = OpEx<"optional">;
+export type ZeroOrMoreExpression = OpEx<"zero_or_more">;
+export type OneOrMoreExpression = OpEx<"one_or_more">;
 export type SemanticAndExpression = BaseNode<"semantic_and"> & Coded & Op;
 export type SemanticNotExpression = BaseNode<"semantic_not"> & Coded & Op;
+
 export type GroupExpression = Bracketed & ExpressionExpression<"group">;
 
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
@@ -146,6 +147,22 @@ export type AnyExpression = BaseNode<"any">;
 export type Name = ValueExpression<"name">;
 export type Punctuation = ValueExpression<"punc">;
 export type Code = Bracketed & ValueExpression<"code">;
+export type BlockComment = BaseNode<"Block"> & EStree.Comment;
+export type LineComment = BaseNode<"Line"> & EStree.Comment;
+
+export type Comment
+  = BlockComment
+  | LineComment;
+
+export type OperatorExpression
+  = OneOrMoreExpression
+  | OptionalExpression
+  | SemanticAndExpression
+  | SemanticNotExpression
+  | SimpleAndExpression
+  | SimpleNotExpression
+  | TextExpression
+  | ZeroOrMoreExpression;
 
 export type ValueNode
   = Code
@@ -158,6 +175,10 @@ export type PrefixedExpression
   = SimpleAndExpression
   | SimpleNotExpression
   | TextExpression;
+
+export type PrefixedOperatorExpression
+  = PrefixedExpression
+  | SemanticPredicateExpression;
 
 export type SuffixedExpression
   = OneOrMoreExpression
@@ -188,8 +209,8 @@ export type Expression
 
 export type Node
   = Code
+  | Comment
   | DisplayName
-  | EStree.Comment
   | Expression
   | Grammar
   | Initializer
