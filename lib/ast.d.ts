@@ -86,6 +86,8 @@ export interface SequenceExpression extends BaseNode<"sequence"> {
 }
 export interface LabeledExpression extends ExpressionExpression<"labeled"> {
     name: Name;
+    at: Punctuation;
+    colon: Punctuation;
     pick: boolean;
 }
 declare type OpEx<T extends NodeTypes> = ExpressionExpression<T> & Op;

@@ -179,37 +179,35 @@ SequenceExpression
     }
 
 LabeledExpression
-  = pluck:Pluck name:LabelColon? expression:PrefixedExpression {
+  = at:At __ lc:LabelColon? __ expression:PrefixedExpression {
       if (expression.type.startsWith("semantic_")) {
-        error("\"@\" cannot be used on a semantic predicate", pluck);
+        error("\"@\" cannot be used on a semantic predicate");
       }
       return loc({
         type: "labeled",
-        name,
+        ...lc,
+        at,
         pick: true,
         expression,
       });
     }
-  / name:LabelColon __ expression:PrefixedExpression {
+  / lc:LabelColon __ expression:PrefixedExpression {
       return loc({
         type: "labeled",
-        name,
+        ...lc,
         pick: false,
         expression,
       });
     }
   / PrefixedExpression
 
-Pluck
-  = "@" { return location(); }
-
 LabelColon
-  = label:IdentifierName __ ":" {
-      if (reservedWords.indexOf(label.name) >= 0) {
-        error(`Label can't be a reserved word "${label[0]}"`, label[1]);
+  = name:IdentifierName __ colon:Colon {
+      if (reservedWords.indexOf(name.value) >= 0) {
+        error(`Label can't be a reserved word "${name.value}"`);
       }
 
-      return label;
+      return {name, colon};
     }
 
 PrefixedExpression
@@ -583,6 +581,12 @@ Squote
 
 Dquote
   = value:'"' { return loc({ type: "punc", value }); }
+
+Colon
+  = value:':' { return loc({ type: "punc", value }); }
+
+At
+  = value:'@' { return loc({ type: "punc", value }); }
 
 __
   = (WhiteSpace / LineTerminatorSequence / Comment)*

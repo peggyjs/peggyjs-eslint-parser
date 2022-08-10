@@ -14,7 +14,7 @@ export const visitorKeys = {
   choice: ["alternatives", "slashes"],
   action: ["expression", "code"],
   sequence: ["elements"],
-  labeled: ["name", "expression"],
+  labeled: ["at", "name", "colon", "expression"],
   text: ["operator", "expression"],
   simple_and: ["operator", "expression"],
   simple_not: ["operator", "expression"],
@@ -102,6 +102,8 @@ export interface SequenceExpression extends BaseNode<"sequence"> {
 
 export interface LabeledExpression extends ExpressionExpression<"labeled"> {
   name: Name;
+  at: Punctuation;
+  colon: Punctuation;
   pick: boolean;
 }
 
