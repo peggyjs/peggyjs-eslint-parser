@@ -13,3 +13,4 @@ examples
 src/
 test
 tsconfig.json
+.peggy.js
