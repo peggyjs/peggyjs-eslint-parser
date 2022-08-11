@@ -17,5 +17,14 @@ module.exports = {
         ecmaVersion: 2020,
       },
     },
+    {
+      files: ["test/**/*.js"],
+      extends: [
+        "plugin:mocha/recommended",
+      ],
+      rules: {
+        "mocha/no-mocha-arrows": "off",
+      },
+    },
   ],
 };
