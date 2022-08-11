@@ -8,7 +8,7 @@
     "ts": "tsc",
     "ts:sourcemap": "tsc --inlineSourceMap",
     "lint": "eslint . --ext js,ts",
-    "test": "node -r source-map-support/register --test",
+    "test": "mocha -r source-map-support/register --recursive",
     "precoverage": "npm run parser && npm run ts:sourcemap",
     "coverage": "c8 npm test",
     "postcoverage": "npm run ts",
@@ -28,9 +28,14 @@
     "@types/eslint": "8.4.5",
     "c8": "7.12.0",
     "eslint": "8.21.0",
+    "eslint-plugin-mocha": "10.1.0",
+    "mocha": "10.0.0",
     "peggy": "2.0.1",
     "source-map-support": "0.5.21",
     "ts-pegjs": "2.1.0",
     "typescript": "4.7.4"
+  },
+  "engines": {
+    "node": ">=14.20"
   }
 }

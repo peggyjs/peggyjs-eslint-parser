@@ -6,109 +6,109 @@ const {
   parseForESLint,
   visitor,
 } = require("../lib/index");
-const test = require("node:test");
 const path = require("path");
 const fs = require("fs").promises;
 
 const filePath = path.join(__dirname, "fixtures", "fizzbuzz.peggy");
 
-test("visit all", async() => {
-  const source = await fs.readFile(filePath, "utf8");
-  const { ast } = parseForESLint(source, { filePath });
-  const v = new visitor.Visitor({
-    "*": (node, opts) => {
-      if (opts) {
-        if (opts.array) {
-          return [...opts.parentResult, opts.name, node.type];
+describe("visitor", () => {
+  it("visit all", async() => {
+    const source = await fs.readFile(filePath, "utf8");
+    const { ast } = parseForESLint(source, { filePath });
+    const v = new visitor.Visitor({
+      "*": (node, opts) => {
+        if (opts) {
+          if (opts.array) {
+            return [...opts.parentResult, opts.name, node.type];
+          }
+          return [...opts.parentResult, node.type];
         }
-        return [...opts.parentResult, node.type];
-      }
-      return ["Program"];
-    },
-    "*:exit": (node, opts) => {
-      if (typeof node !== "object") {
-        console.log("%o", opts);
-        throw new Error("fail");
-      }
-      node.path = opts?.thisResult?.join("/");
-    },
-  });
-  v.visit(ast);
+        return ["Program"];
+      },
+      "*:exit": (node, opts) => {
+        if (typeof node !== "object") {
+          console.log("%o", opts);
+          throw new Error("fail");
+        }
+        node.path = opts?.thisResult?.join("/");
+      },
+    });
+    v.visit(ast);
 
-  // If needed:
-  // console.log(require("util").inspect(ast, {
-  //   depth: Infinity,
-  //   colors: process.stdout.isTTY,
-  // }));
+    // If needed:
+    // console.log(require("util").inspect(ast, {
+    //   depth: Infinity,
+    //   colors: process.stdout.isTTY,
+    // }));
 
-  // Manually visit, and make sure each node has a path.
-  function testVisit(o) {
-    if (typeof o === "object") {
-      if (!o) {
-        return;
-      }
-      if (Array.isArray(o)) {
-        for (const child of o) {
-          testVisit(child);
+    // Manually visit, and make sure each node has a path.
+    function testVisit(o) {
+      if (typeof o === "object") {
+        if (!o) {
+          return;
         }
-      } else {
-        if (typeof o.path !== "string") {
-          console.log(o);
-        }
-        assert.equal(typeof o.path, "string");
-        for (const [k, child] of Object.entries(o)) {
-          if (k !== "loc") {
+        if (Array.isArray(o)) {
+          for (const child of o) {
             testVisit(child);
+          }
+        } else {
+          if (typeof o.path !== "string") {
+            console.log(o);
+          }
+          assert.equal(typeof o.path, "string");
+          for (const [k, child] of Object.entries(o)) {
+            if (k !== "loc") {
+              testVisit(child);
+            }
           }
         }
       }
     }
-  }
-  // In case.
-  // console.log(require("util").inspect(ast, { depth: Infinity, colors: process.stdout.isTTY }));
-  testVisit(ast);
-});
-
-test("functions", async() => {
-  const source = await fs.readFile(filePath, "utf8");
-  const { ast } = parseForESLint(source, { filePath });
-
-  const functions = [];
-  function addFunction(predicate, params, body) {
-    functions.push({
-      predicate,
-      params,
-      body,
-    });
-  }
-  const v = new visitor.Visitor({
-    rule() {
-      return {};
-    },
-    labeled(node, opts) {
-      if (node.name) { // Not plucked
-        opts.parentResult[node.name.value] = node.name;
-      }
-    },
-    action(node, opts) {
-      return { ...opts.parentResult };
-    },
-    "action:exit": (node, opts) => {
-      addFunction(false, opts.thisResult, node.code);
-    },
-    "semantic_and:exit": (node, opts) => {
-      addFunction(true, opts.thisResult, node.code);
-    },
-    "semantic_not:exit": (node, opts) => {
-      addFunction(true, opts.thisResult, node.code);
-    },
+    // In case.
+    // console.log(require("util").inspect(ast, { depth: Infinity, colors: process.stdout.isTTY }));
+    testVisit(ast);
   });
-  v.visit(ast);
 
-  const src = functions.map(
-    ({ params, body }, i) => `function peg$${i}(${Object.keys(params).join(", ")}) {${body.value}}`
-  ).join("\n");
-  assert.equal(src, `\
+  it("functions", async() => {
+    const source = await fs.readFile(filePath, "utf8");
+    const { ast } = parseForESLint(source, { filePath });
+
+    const functions = [];
+    function addFunction(predicate, params, body) {
+      functions.push({
+        predicate,
+        params,
+        body,
+      });
+    }
+    const v = new visitor.Visitor({
+      rule() {
+        return {};
+      },
+      labeled(node, opts) {
+        if (node.name) { // Not plucked
+          opts.parentResult[node.name.value] = node.name;
+        }
+      },
+      action(node, opts) {
+        return { ...opts.parentResult };
+      },
+      "action:exit": (node, opts) => {
+        addFunction(false, opts.thisResult, node.code);
+      },
+      "semantic_and:exit": (node, opts) => {
+        addFunction(true, opts.thisResult, node.code);
+      },
+      "semantic_not:exit": (node, opts) => {
+        addFunction(true, opts.thisResult, node.code);
+      },
+    });
+    v.visit(ast);
+
+    const src = functions.map(
+      ({ params, body }, i) => `function peg$${i}(${Object.keys(params).join(", ")}) {${body.value}}`
+    ).join("\n");
+    assert.equal(src, `\
 function peg$0(c) { return c.filter(fb => fb) }
 function peg$1() { return }
 function peg$2() { return }
@@ -127,4 +127,5 @@ function peg$11(two) { return two * 2}
 function peg$12(one) {
   return -one;
 }`);
+  });
 });
