@@ -6,7 +6,10 @@ const path = require("path");
 const { parseForESLint } = require("../lib/index");
 
 describe("index", () => {
-  it("parse", async() => {
+  // eslint-disable-next-line prefer-arrow-callback
+  it("parse", async function() {
+    this.timeout(10000); // 10s timeout because GHA on Windows is slow.
+
     const esl = new ESLint({
       cwd: path.join(__dirname, "fixtures"),
       overrideConfig: {
