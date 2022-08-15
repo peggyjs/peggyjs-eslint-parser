@@ -29,7 +29,7 @@ describe("index", () => {
     assert.throws(() => parseForESLint("foo='"), /SyntaxError: Expected/);
     assert.throws(
       () => parseForESLint("foo='", { filePath: "bar" }),
-      /File: "bar"/
+      /--> bar:/
     );
   });
 });

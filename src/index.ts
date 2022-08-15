@@ -92,8 +92,8 @@ export function parseForESLint(code: string, options: parseOptions = {}):
     };
   } catch (ex) {
     if (isSytnaxError(ex)) {
-      if (ex.location?.source) {
-        ex.message += `  File: "${ex.location.source}"`;
+      if (options.filePath) {
+        ex.message = ex.format([{ source: options.filePath, text: code }]);
       }
       // @ts-expect-error Make it compatible with eslint
       ex.lineNumber = ex.location?.start?.line;
