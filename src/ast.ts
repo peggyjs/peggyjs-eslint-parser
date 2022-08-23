@@ -7,9 +7,9 @@ import type EStree from "estree";
 export const visitorKeys = {
   Program: ["body", "comments"],
   grammar: ["topLevelInitializer", "initializer", "rules"],
-  top_level_initializer: ["code"],
-  initializer: ["code"],
-  rule: ["name", "equals", "expression"],
+  top_level_initializer: ["open", "code", "close", "semi"],
+  initializer: ["code", "semi"],
+  rule: ["name", "equals", "expression", "semi"],
   named: ["name", "expression"],
   choice: ["alternatives", "slashes"],
   action: ["expression", "code"],
@@ -54,6 +54,11 @@ interface Bracketed {
   close: Punctuation;
 }
 
+interface Terminated {
+  // Semicolons are always optional.
+  semi?: Punctuation;
+}
+
 interface Op {
   operator: Punctuation;
 }
@@ -75,10 +80,11 @@ export interface Grammar extends BaseNode<"grammar"> {
   rules: Rule[];
 }
 
-export type TopLevelInitializer = BaseNode<"top_level_initializer"> & Coded;
-export type Initializer = BaseNode<"initializer"> & Coded;
+export type TopLevelInitializer = BaseNode<"top_level_initializer">
+  & Bracketed & Coded & Terminated;
+export type Initializer = BaseNode<"initializer"> & Coded & Terminated;
 
-export interface Rule extends BaseNode<"rule"> {
+export interface Rule extends BaseNode<"rule">, Terminated {
   name: Name;
   equals: Punctuation;
   expression: Expression;

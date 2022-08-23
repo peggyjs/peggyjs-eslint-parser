@@ -14,3 +14,5 @@ src/
 test
 tsconfig.json
 .peggy.js
+.mocharc.js
+tools/

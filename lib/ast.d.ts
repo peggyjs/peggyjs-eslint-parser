@@ -48,6 +48,9 @@ interface Bracketed {
     open: Punctuation;
     close: Punctuation;
 }
+interface Terminated {
+    semi?: Punctuation;
+}
 interface Op {
     operator: Punctuation;
 }
@@ -65,9 +68,9 @@ export interface Grammar extends BaseNode<"grammar"> {
     initializer?: Initializer;
     rules: Rule[];
 }
-export declare type TopLevelInitializer = BaseNode<"top_level_initializer"> & Coded;
-export declare type Initializer = BaseNode<"initializer"> & Coded;
-export interface Rule extends BaseNode<"rule"> {
+export declare type TopLevelInitializer = BaseNode<"top_level_initializer"> & Bracketed & Coded & Terminated;
+export declare type Initializer = BaseNode<"initializer"> & Coded & Terminated;
+export interface Rule extends BaseNode<"rule">, Terminated {
     name: Name;
     equals: Punctuation;
     expression: Expression;
