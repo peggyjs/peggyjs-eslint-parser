@@ -8,7 +8,7 @@
     "ts": "tsc",
     "ts:sourcemap": "tsc --inlineSourceMap",
     "lint": "eslint . --ext js,ts",
-    "test": "mocha -r source-map-support/register --recursive",
+    "test": "mocha",
     "precoverage": "npm run parser && npm run ts:sourcemap",
     "coverage": "c8 npm test",
     "postcoverage": "npm run ts",
