@@ -20,6 +20,12 @@ interface VisitorFunctionMap<T> {
   initializer?: VisitorFunction<T, AST.Initializer>;
   rule?: VisitorFunction<T, AST.Rule>;
   named?: VisitorFunction<T, AST.NamedExpression>;
+  repeated?: VisitorFunction<T, AST.RepeatedExpression>;
+  boundaries?: VisitorFunction<T, AST.Boundaries>;
+  delimiter?: VisitorFunction<T, AST.Delimiter>;
+  constant?: VisitorFunction<T, AST.BoundaryConstant>;
+  variable?: VisitorFunction<T, AST.BoundaryVariable>;
+  function?: VisitorFunction<T, AST.BoundaryFunction>;
   choice?: VisitorFunction<T, AST.ChoiceExpression>;
   action?: VisitorFunction<T, AST.ActionExpression>;
   sequence?: VisitorFunction<T, AST.SequenceExpression>;
@@ -50,6 +56,12 @@ interface VisitorFunctionMap<T> {
   "initializer:exit"?: VisitorFunction<T, AST.Initializer>;
   "rule:exit"?: VisitorFunction<T, AST.Rule>;
   "named:exit"?: VisitorFunction<T, AST.NamedExpression>;
+  "repeated:exit"?: VisitorFunction<T, AST.RepeatedExpression>;
+  "boundaries:exit"?: VisitorFunction<T, AST.Boundaries>;
+  "delimiter:exit"?: VisitorFunction<T, AST.Delimiter>;
+  "constant:exit"?: VisitorFunction<T, AST.BoundaryConstant>;
+  "variable:exit"?: VisitorFunction<T, AST.BoundaryVariable>;
+  "function:exit"?: VisitorFunction<T, AST.BoundaryFunction>;
   "choice:exit"?: VisitorFunction<T, AST.ChoiceExpression>;
   "action:exit"?: VisitorFunction<T, AST.ActionExpression>;
   "sequence:exit"?: VisitorFunction<T, AST.SequenceExpression>;

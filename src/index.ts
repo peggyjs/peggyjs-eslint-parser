@@ -1,11 +1,11 @@
 import * as visitor from "./visitor.js";
-import { SyntaxError, parse } from "./parser.js";
+import { PeggySyntaxError, parse } from "./parser.js";
 import type ESlint from "eslint";
 
 export { visitor };
 
-function isSytnaxError(er: any): er is SyntaxError {
-  return er instanceof SyntaxError;
+function isSytnaxError(er: any): er is PeggySyntaxError {
+  return er instanceof PeggySyntaxError;
 }
 
 const RESERVED_WORDS = [
@@ -42,7 +42,6 @@ const RESERVED_WORDS = [
   "void",
   "while",
   "with",
-  // "yield", // encountered twice on the web page
 
   // Special constants
   "null",
@@ -53,7 +52,7 @@ const RESERVED_WORDS = [
   "enum",
 
   // The following are only reserved when they are found in strict mode code
-  // Peggy generates code in strictly mode, so it applicable to it
+  // Peggy generates code in strict mode, so they are applicable
   "implements",
   "interface",
   "let",
@@ -66,7 +65,44 @@ const RESERVED_WORDS = [
 
   // The following are only reserved when they are found in module code:
   "await",
+
+  // The following are reserved as future keywords by ECMAScript 1..3
+  // specifications, but not any more in modern ECMAScript. We don't need these
+  // because the code-generation of Peggy only targets ECMAScript >= 5.
+  //
+  // - abstract
+  // - boolean
+  // - byte
+  // - char
+  // - double
+  // - final
+  // - float
+  // - goto
+  // - int
+  // - long
+  // - native
+  // - short
+  // - synchronized
+  // - throws
+  // - transient
+  // - volatile
+
+  // These are not reserved keywords, but using them as variable names is problematic.
+  "arguments", // Conflicts with a special variable available inside functions.
+  "eval", // Redeclaring eval() is prohibited in strict mode
+
+  // A few identifiers have a special meaning in some contexts without being
+  // reserved words of any kind. These we don't need to worry about as they can
+  // all be safely used as variable names.
+  //
+  // - as
+  // - async
+  // - from
+  // - get
+  // - of
+  // - set
 ];
+
 
 interface parseOptions {
   /**
@@ -93,7 +129,7 @@ export function parseForESLint(code: string, options: parseOptions = {}):
   } catch (ex) {
     if (isSytnaxError(ex)) {
       if (options.filePath) {
-        ex.message = ex.format([{ source: options.filePath, text: code }]);
+        ex.message = ex.format([{ grammarSource: options.filePath, text: code }]);
       }
       // @ts-expect-error Make it compatible with eslint
       ex.lineNumber = ex.location?.start?.line;

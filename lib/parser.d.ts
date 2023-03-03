@@ -1,55 +1,55 @@
-export interface IFilePosition {
+export interface FilePosition {
     offset: number;
     line: number;
     column: number;
 }
-export interface IFileRange {
-    start: IFilePosition;
-    end: IFilePosition;
+export interface FileRange {
+    start: FilePosition;
+    end: FilePosition;
     source: string;
 }
-export interface ILiteralExpectation {
+export interface LiteralExpectation {
     type: "literal";
     text: string;
     ignoreCase: boolean;
 }
-export interface IClassParts extends Array<string | IClassParts> {
+export interface ClassParts extends Array<string | ClassParts> {
 }
-export interface IClassExpectation {
+export interface ClassExpectation {
     type: "class";
-    parts: IClassParts;
+    parts: ClassParts;
     inverted: boolean;
     ignoreCase: boolean;
 }
-export interface IAnyExpectation {
+export interface AnyExpectation {
     type: "any";
 }
-export interface IEndExpectation {
+export interface EndExpectation {
     type: "end";
 }
-export interface IOtherExpectation {
+export interface OtherExpectation {
     type: "other";
     description: string;
 }
-export declare type Expectation = ILiteralExpectation | IClassExpectation | IAnyExpectation | IEndExpectation | IOtherExpectation;
-export declare class SyntaxError extends Error {
+export type Expectation = LiteralExpectation | ClassExpectation | AnyExpectation | EndExpectation | OtherExpectation;
+export declare class PeggySyntaxError extends Error {
     static buildMessage(expected: Expectation[], found: string | null): string;
     message: string;
     expected: Expectation[];
     found: string | null;
-    location: IFileRange;
+    location: FileRange;
     name: string;
-    constructor(message: string, expected: Expectation[], found: string | null, location: IFileRange);
+    constructor(message: string, expected: Expectation[], found: string | null, location: FileRange);
     format(sources: {
-        source: string;
+        grammarSource?: string;
         text: string;
     }[]): string;
 }
-export interface IParseOptions {
+export interface ParseOptions {
     filename?: string;
     startRule?: string;
     tracer?: any;
     [key: string]: any;
 }
-export declare type ParseFunction = (input: string, options?: IParseOptions) => any;
+export type ParseFunction = (input: string, options?: ParseOptions) => any;
 export declare const parse: ParseFunction;

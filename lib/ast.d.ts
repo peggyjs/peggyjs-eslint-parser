@@ -10,6 +10,12 @@ export declare const visitorKeys: {
     initializer: string[];
     rule: string[];
     named: string[];
+    repeated: string[];
+    boundaries: string[];
+    delimiter: string[];
+    constant: never[];
+    variable: never[];
+    function: string[];
     choice: string[];
     action: string[];
     sequence: string[];
@@ -34,7 +40,7 @@ export declare const visitorKeys: {
     Block: never[];
     Line: never[];
 };
-export declare type NodeTypes = keyof typeof visitorKeys;
+export type NodeTypes = keyof typeof visitorKeys;
 export interface BaseNode<T extends NodeTypes> {
     type: T;
     parent?: Node;
@@ -68,8 +74,8 @@ export interface Grammar extends BaseNode<"grammar"> {
     initializer?: Initializer;
     rules: Rule[];
 }
-export declare type TopLevelInitializer = BaseNode<"top_level_initializer"> & Bracketed & Coded & Terminated;
-export declare type Initializer = BaseNode<"initializer"> & Coded & Terminated;
+export type TopLevelInitializer = BaseNode<"top_level_initializer"> & Bracketed & Coded & Terminated;
+export type Initializer = BaseNode<"initializer"> & Coded & Terminated;
 export interface Rule extends BaseNode<"rule">, Terminated {
     name: Name;
     equals: Punctuation;
@@ -79,11 +85,37 @@ export interface NamedExpression extends BaseNode<"named"> {
     name: Name;
     expression: Expression;
 }
+export interface RepeatedExpression extends BaseNode<"repeated"> {
+    expression: Expression;
+    pipe1: Punctuation;
+    boundaries: Boundaries;
+    delimiter?: Delimiter;
+    pipe2: Punctuation;
+}
+export interface Boundaries extends BaseNode<"boundaries"> {
+    min?: Boundary;
+    dots?: Punctuation;
+    max?: Boundary;
+}
+export type Boundary = BoundaryConstant | BoundaryVariable | BoundaryFunction;
+export interface BoundaryConstant extends BaseNode<"constant"> {
+    value: number;
+}
+export interface BoundaryVariable extends BaseNode<"variable"> {
+    value: string;
+}
+export interface BoundaryFunction extends BaseNode<"function"> {
+    code: Code;
+}
+export interface Delimiter extends BaseNode<"delimiter"> {
+    comma: Punctuation;
+    expression: Expression;
+}
 export interface ChoiceExpression extends BaseNode<"choice"> {
     alternatives: Expression[];
     slashes: Punctuation[];
 }
-export declare type ActionExpression = Coded & ExpressionExpression<"action">;
+export type ActionExpression = Coded & ExpressionExpression<"action">;
 export interface SequenceExpression extends BaseNode<"sequence"> {
     elements: Expression[];
 }
@@ -93,16 +125,16 @@ export interface LabeledExpression extends ExpressionExpression<"labeled"> {
     colon: Punctuation;
     pick: boolean;
 }
-declare type OpEx<T extends NodeTypes> = ExpressionExpression<T> & Op;
-export declare type TextExpression = OpEx<"text">;
-export declare type SimpleAndExpression = OpEx<"simple_and">;
-export declare type SimpleNotExpression = OpEx<"simple_not">;
-export declare type OptionalExpression = OpEx<"optional">;
-export declare type ZeroOrMoreExpression = OpEx<"zero_or_more">;
-export declare type OneOrMoreExpression = OpEx<"one_or_more">;
-export declare type SemanticAndExpression = BaseNode<"semantic_and"> & Coded & Op;
-export declare type SemanticNotExpression = BaseNode<"semantic_not"> & Coded & Op;
-export declare type GroupExpression = Bracketed & ExpressionExpression<"group">;
+type OpEx<T extends NodeTypes> = ExpressionExpression<T> & Op;
+export type TextExpression = OpEx<"text">;
+export type SimpleAndExpression = OpEx<"simple_and">;
+export type SimpleNotExpression = OpEx<"simple_not">;
+export type OptionalExpression = OpEx<"optional">;
+export type ZeroOrMoreExpression = OpEx<"zero_or_more">;
+export type OneOrMoreExpression = OpEx<"one_or_more">;
+export type SemanticAndExpression = BaseNode<"semantic_and"> & Coded & Op;
+export type SemanticNotExpression = BaseNode<"semantic_not"> & Coded & Op;
+export type GroupExpression = Bracketed & ExpressionExpression<"group">;
 export interface ValueExpression<T extends NodeTypes> extends BaseNode<T> {
     value: string;
 }
@@ -117,26 +149,26 @@ interface QuotedString<T extends NodeTypes> extends ValueExpression<T> {
 export interface LiteralExpression extends QuotedString<"literal"> {
     ignoreCase: boolean;
 }
-export declare type DisplayName = QuotedString<"display">;
+export type DisplayName = QuotedString<"display">;
 export interface ClassExpression extends BaseNode<"class"> {
     parts: (string[] | string)[];
     inverted: boolean;
     ignoreCase: boolean;
 }
-export declare type AnyExpression = BaseNode<"any">;
-export declare type Name = ValueExpression<"name">;
-export declare type Punctuation = ValueExpression<"punc">;
-export declare type Code = Bracketed & ValueExpression<"code">;
-export declare type BlockComment = BaseNode<"Block"> & EStree.Comment;
-export declare type LineComment = BaseNode<"Line"> & EStree.Comment;
-export declare type Comment = BlockComment | LineComment;
-export declare type OperatorExpression = OneOrMoreExpression | OptionalExpression | SemanticAndExpression | SemanticNotExpression | SimpleAndExpression | SimpleNotExpression | TextExpression | ZeroOrMoreExpression;
-export declare type ValueNode = Code | DisplayName | LiteralExpression | Name | Punctuation;
-export declare type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
-export declare type PrefixedOperatorExpression = PrefixedExpression | SemanticPredicateExpression;
-export declare type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
-export declare type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;
-export declare type PrimaryExpression = AnyExpression | ClassExpression | GroupExpression | LiteralExpression | RuleReferenceExpression | SemanticPredicateExpression;
-export declare type Expression = ActionExpression | ChoiceExpression | LabeledExpression | NamedExpression | PrefixedExpression | PrimaryExpression | SequenceExpression | SuffixedExpression;
-export declare type Node = Code | Comment | DisplayName | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
+export type AnyExpression = BaseNode<"any">;
+export type Name = ValueExpression<"name">;
+export type Punctuation = ValueExpression<"punc">;
+export type Code = Bracketed & ValueExpression<"code">;
+export type BlockComment = BaseNode<"Block"> & EStree.Comment;
+export type LineComment = BaseNode<"Line"> & EStree.Comment;
+export type Comment = BlockComment | LineComment;
+export type OperatorExpression = OneOrMoreExpression | OptionalExpression | SemanticAndExpression | SemanticNotExpression | SimpleAndExpression | SimpleNotExpression | TextExpression | ZeroOrMoreExpression;
+export type ValueNode = Code | DisplayName | LiteralExpression | Name | Punctuation;
+export type PrefixedExpression = SimpleAndExpression | SimpleNotExpression | TextExpression;
+export type PrefixedOperatorExpression = PrefixedExpression | SemanticPredicateExpression;
+export type SuffixedExpression = OneOrMoreExpression | OptionalExpression | ZeroOrMoreExpression;
+export type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;
+export type PrimaryExpression = AnyExpression | ClassExpression | GroupExpression | LiteralExpression | RuleReferenceExpression | SemanticPredicateExpression;
+export type Expression = ActionExpression | ChoiceExpression | LabeledExpression | NamedExpression | PrefixedExpression | PrimaryExpression | RepeatedExpression | SequenceExpression | SuffixedExpression;
+export type Node = Boundary | BoundaryConstant | BoundaryFunction | BoundaryVariable | Boundaries | Code | Comment | Delimiter | DisplayName | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
 export {};
