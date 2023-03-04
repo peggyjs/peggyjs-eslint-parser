@@ -62,7 +62,7 @@ interface Bracketed {
 
 interface Terminated {
   // Semicolons are always optional.
-  semi?: Punctuation;
+  semi?: Punctuation[];
 }
 
 interface Op {

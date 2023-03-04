@@ -55,7 +55,7 @@ interface Bracketed {
     close: Punctuation;
 }
 interface Terminated {
-    semi?: Punctuation;
+    semi?: Punctuation[];
 }
 interface Op {
     operator: Punctuation;
