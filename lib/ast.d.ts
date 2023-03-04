@@ -97,7 +97,7 @@ export interface Boundaries extends BaseNode<"boundaries"> {
     dots?: Punctuation;
     max?: Boundary;
 }
-export type Boundary = BoundaryConstant | BoundaryVariable | BoundaryFunction;
+export type Boundary = BoundaryConstant | BoundaryFunction | BoundaryVariable;
 export interface BoundaryConstant extends BaseNode<"constant"> {
     value: number;
 }
@@ -170,5 +170,5 @@ export type SuffixedExpression = OneOrMoreExpression | OptionalExpression | Zero
 export type SemanticPredicateExpression = SemanticAndExpression | SemanticNotExpression;
 export type PrimaryExpression = AnyExpression | ClassExpression | GroupExpression | LiteralExpression | RuleReferenceExpression | SemanticPredicateExpression;
 export type Expression = ActionExpression | ChoiceExpression | LabeledExpression | NamedExpression | PrefixedExpression | PrimaryExpression | RepeatedExpression | SequenceExpression | SuffixedExpression;
-export type Node = Boundary | BoundaryConstant | BoundaryFunction | BoundaryVariable | Boundaries | Code | Comment | Delimiter | DisplayName | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
+export type Node = Boundaries | Boundary | BoundaryConstant | BoundaryFunction | BoundaryVariable | Code | Comment | Delimiter | DisplayName | Expression | Grammar | Initializer | Name | Program | Punctuation | Rule | TopLevelInitializer;
 export {};

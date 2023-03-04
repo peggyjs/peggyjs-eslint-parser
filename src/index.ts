@@ -103,7 +103,6 @@ const RESERVED_WORDS = [
   // - set
 ];
 
-
 interface parseOptions {
   /**
    * The file that `code` was read from, used as grammarSource.
@@ -129,7 +128,10 @@ export function parseForESLint(code: string, options: parseOptions = {}):
   } catch (ex) {
     if (isSytnaxError(ex)) {
       if (options.filePath) {
-        ex.message = ex.format([{ grammarSource: options.filePath, text: code }]);
+        ex.message = ex.format([{
+          grammarSource: options.filePath,
+          text: code,
+        }]);
       }
       // @ts-expect-error Make it compatible with eslint
       ex.lineNumber = ex.location?.start?.line;

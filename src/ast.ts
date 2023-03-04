@@ -115,14 +115,14 @@ export interface Boundaries extends BaseNode<"boundaries"> {
   max?: Boundary;
 }
 
-export type Boundary = BoundaryConstant | BoundaryVariable | BoundaryFunction;
+export type Boundary = BoundaryConstant | BoundaryFunction | BoundaryVariable;
 
 export interface BoundaryConstant extends BaseNode<"constant"> {
-  value: number
+  value: number;
 }
 
 export interface BoundaryVariable extends BaseNode<"variable"> {
-  value: string
+  value: string;
 }
 
 export interface BoundaryFunction extends BaseNode<"function"> {
@@ -256,11 +256,11 @@ export type Expression
   | SuffixedExpression;
 
 export type Node
-  = Boundary
+  = Boundaries
+  | Boundary
   | BoundaryConstant
   | BoundaryFunction
   | BoundaryVariable
-  | Boundaries
   | Code
   | Comment
   | Delimiter

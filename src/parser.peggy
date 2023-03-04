@@ -535,7 +535,7 @@ Integer
 // Automatic Semicolon Insertion
 
 EOS
-  = __ @Semicolon
+  = (__ @Semicolon)+
   / _ SingleLineComment? LineTerminatorSequence { return undefined; }
   / __ EOF { return undefined; }
 
