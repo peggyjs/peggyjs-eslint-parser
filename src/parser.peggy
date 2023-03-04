@@ -243,10 +243,75 @@ SuffixedExpression
         operator
       });
     }
+  / RepeatedExpression
   / PrimaryExpression
 
 SuffixedOperator
   = value:( "?" / "*" / "+" ) { return loc({ type: "punc", value })}
+
+RepeatedExpression
+  = expression:PrimaryExpression __ pipe1:Pipe __ boundaries:Boundaries __ delimiter:Delimiter? pipe2:Pipe {
+      const {min, max} = boundaries
+      if (max.type === "constant" && max.value === 0) {
+        error("The maximum count of repetitions of the rule must be > 0", max.location);
+      }
+
+      return loc({
+        type: "repeated",
+        expression,
+        pipe1,
+        boundaries,
+        delimiter,
+        pipe2
+      });
+    }
+
+Boundaries
+  = min:Boundary? __ dots:DotDot __ max:Boundary? {
+      return loc({
+        type: "boundaries",
+        min: min !== null ? min : loc({ type: "constant", value: 0 }),
+        max: max !== null ? max : loc({ type: "constant", value: undefined }),
+        dots
+      });
+    }
+  / max:Boundary {
+      return loc({
+        type: "boundaries",
+        min: undefined,
+        max,
+        dots: undefined
+      })
+   }
+
+Boundary
+  = value:Integer {
+      return loc({
+        type: "constant",
+        value
+      });
+    }
+  / value:IdentifierName {
+      return loc({
+        type: "variable",
+        value
+      });
+    }
+  / code:CodeBlock {
+    return loc({
+      type: "function",
+      code
+    });
+  }
+
+Delimiter
+  = comma:Comma __ expression:Expression __ {
+    return loc({
+      type: "delimiter",
+      comma,
+      expression
+    })
+  }
 
 PrimaryExpression
   = LiteralMatcher
@@ -464,10 +529,13 @@ BareCodeBlock
 Code
   = $( ( ![{}] SourceCharacter )+ / "{" Code "}" )*
 
+Integer
+  = digits:$DecimalDigit+ { return parseInt(digits, 10); }
+
 // Automatic Semicolon Insertion
 
 EOS
-  = __ @Semicolon
+  = (__ @Semicolon)+
   / _ SingleLineComment? LineTerminatorSequence { return undefined; }
   / __ EOF { return undefined; }
 
@@ -633,3 +701,11 @@ At
 Semicolon
   = value:";" { return loc({ type: "punc", value }); }
 
+Pipe
+  = value:"|" { return loc({ type: "punc", value }); }
+
+Comma
+  = value:"," { return loc({ type: "punc", value }); }
+
+DotDot
+  = value:".." { return loc({ type: "punc", value }); }

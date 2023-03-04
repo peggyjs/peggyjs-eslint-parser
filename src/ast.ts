@@ -11,6 +11,12 @@ export const visitorKeys = {
   initializer: ["code", "semi"],
   rule: ["name", "equals", "expression", "semi"],
   named: ["name", "expression"],
+  repeated: ["expression", "pipe1", "boundaries", "delimiter", "pipe2"],
+  boundaries: ["min", "dots", "max"],
+  delimiter: ["comma", "expression"],
+  constant: [],
+  variable: [],
+  function: ["code"],
   choice: ["alternatives", "slashes"],
   action: ["expression", "code"],
   sequence: ["elements"],
@@ -92,6 +98,39 @@ export interface Rule extends BaseNode<"rule">, Terminated {
 
 export interface NamedExpression extends BaseNode<"named"> {
   name: Name;
+  expression: Expression;
+}
+
+export interface RepeatedExpression extends BaseNode<"repeated"> {
+  expression: Expression;
+  pipe1: Punctuation;
+  boundaries: Boundaries;
+  delimiter?: Delimiter;
+  pipe2: Punctuation;
+}
+
+export interface Boundaries extends BaseNode<"boundaries"> {
+  min?: Boundary;
+  dots?: Punctuation;
+  max?: Boundary;
+}
+
+export type Boundary = BoundaryConstant | BoundaryFunction | BoundaryVariable;
+
+export interface BoundaryConstant extends BaseNode<"constant"> {
+  value: number;
+}
+
+export interface BoundaryVariable extends BaseNode<"variable"> {
+  value: string;
+}
+
+export interface BoundaryFunction extends BaseNode<"function"> {
+  code: Code;
+}
+
+export interface Delimiter extends BaseNode<"delimiter"> {
+  comma: Punctuation;
   expression: Expression;
 }
 
@@ -212,12 +251,19 @@ export type Expression
   | NamedExpression
   | PrefixedExpression
   | PrimaryExpression
+  | RepeatedExpression
   | SequenceExpression
   | SuffixedExpression;
 
 export type Node
-  = Code
+  = Boundaries
+  | Boundary
+  | BoundaryConstant
+  | BoundaryFunction
+  | BoundaryVariable
+  | Code
   | Comment
+  | Delimiter
   | DisplayName
   | Expression
   | Grammar
