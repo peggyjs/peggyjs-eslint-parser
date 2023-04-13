@@ -1,12 +1,8 @@
-import * as visitor from "./visitor.js";
-import { PeggySyntaxError, parse } from "./parser.js";
-import type ESlint from "eslint";
+import type * as ESlint from "eslint";
+import * as visitor from "./visitor";
+import { PeggySyntaxError, parse } from "./parser";
 
 export { visitor };
-
-function isSytnaxError(er: any): er is PeggySyntaxError {
-  return er instanceof PeggySyntaxError;
-}
 
 const RESERVED_WORDS = [
   // Reserved keywords as of ECMAScript 2015
@@ -122,20 +118,20 @@ export function parseForESLint(code: string, options: parseOptions = {}):
     });
 
     return {
-      ast,
+      ast: ast as unknown as ESlint.AST.Program,
       visitorKeys: visitor.Visitor.visitorKeys,
     };
   } catch (ex) {
-    if (isSytnaxError(ex)) {
+    if (ex instanceof PeggySyntaxError) {
       if (options.filePath) {
         ex.message = ex.format([{
-          grammarSource: options.filePath,
+          source: options.filePath,
           text: code,
         }]);
       }
-      // @ts-expect-error Make it compatible with eslint
+      // @ts-expect-error Extending type
       ex.lineNumber = ex.location?.start?.line;
-      // @ts-expect-error Make it compatible with eslint
+      // @ts-expect-error Extending type
       ex.column = ex.location?.start?.column;
     }
     throw ex;

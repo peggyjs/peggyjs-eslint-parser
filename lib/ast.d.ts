@@ -1,5 +1,5 @@
-import type ESlint from "eslint";
-import type EStree from "estree";
+import type * as ESlint from "eslint";
+import type * as EStree from "estree";
 /**
  * ESlint uses these for visiting the AST.  We'll do the same in visitor.ts.
  */

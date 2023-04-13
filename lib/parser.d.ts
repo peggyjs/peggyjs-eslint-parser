@@ -1,3 +1,4 @@
+import type * as ast from "./ast";
 export interface FilePosition {
     offset: number;
     line: number;
@@ -32,7 +33,7 @@ export interface OtherExpectation {
     description: string;
 }
 export type Expectation = LiteralExpectation | ClassExpectation | AnyExpectation | EndExpectation | OtherExpectation;
-export declare class PeggySyntaxError extends Error {
+declare class _PeggySyntaxError extends Error {
     static buildMessage(expected: Expectation[], found: string | null): string;
     message: string;
     expected: Expectation[];
@@ -41,15 +42,26 @@ export declare class PeggySyntaxError extends Error {
     name: string;
     constructor(message: string, expected: Expectation[], found: string | null, location: FileRange);
     format(sources: {
-        grammarSource?: string;
+        source?: string;
         text: string;
     }[]): string;
 }
+export interface TraceEvent {
+    type: string;
+    rule: string;
+    result?: any;
+    location: FileRange;
+}
 export interface ParseOptions {
     filename?: string;
-    startRule?: string;
+    startRule?: "Program";
     tracer?: any;
     [key: string]: any;
 }
-export type ParseFunction = (input: string, options?: ParseOptions) => any;
+export type ParseFunction = <Options extends ParseOptions>(input: string, options?: Options) => Options extends {
+    startRule: infer StartRule;
+} ? StartRule extends "Program" ? Program : Program : Program;
 export declare const parse: ParseFunction;
+export declare const PeggySyntaxError: typeof _PeggySyntaxError;
+export type Program = ast.Program;
+export {};
