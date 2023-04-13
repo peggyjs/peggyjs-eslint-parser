@@ -42,7 +42,7 @@ declare class _PeggySyntaxError extends Error {
     name: string;
     constructor(message: string, expected: Expectation[], found: string | null, location: FileRange);
     format(sources: {
-        source?: string;
+        source?: any;
         text: string;
     }[]): string;
 }
@@ -63,5 +63,5 @@ export type ParseFunction = <Options extends ParseOptions>(input: string, option
 } ? StartRule extends "Program" ? Program : Program : Program;
 export declare const parse: ParseFunction;
 export declare const PeggySyntaxError: typeof _PeggySyntaxError;
-export type Program = ast.Program;
+export type Program = ast.Node;
 export {};
