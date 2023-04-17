@@ -164,7 +164,7 @@ export class Visitor<T> {
       opts.thisResult = parentResult;
       if (exitFun) {
         opts.thisResult = parentResult;
-        // @ts-expect-error Can't get correct node type here
+        // @ts-expect-error Something went wrong with the types.
         exitFun(node, opts);
       }
       if (this.starExit) {

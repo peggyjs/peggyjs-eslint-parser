@@ -6,6 +6,7 @@
   "exclude": [
     "lib/parser.js",
     ".eslintrc.js",
+    ".mocharc.js",
     "test/**"
   ]
 }

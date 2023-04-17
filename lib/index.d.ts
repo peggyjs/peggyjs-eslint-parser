@@ -1,5 +1,5 @@
-import * as visitor from "./visitor.js";
-import type ESlint from "eslint";
+import type * as ESlint from "eslint";
+import * as visitor from "./visitor";
 export { visitor };
 interface parseOptions {
     /**
