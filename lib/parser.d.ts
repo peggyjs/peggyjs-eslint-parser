@@ -63,5 +63,6 @@ export type ParseFunction = <Options extends ParseOptions>(input: string, option
 } ? StartRule extends "Program" ? Program : Program : Program;
 export declare const parse: ParseFunction;
 export declare const PeggySyntaxError: typeof _PeggySyntaxError;
+export type PeggySyntaxError = _PeggySyntaxError;
 export type Program = ast.Node;
 export {};

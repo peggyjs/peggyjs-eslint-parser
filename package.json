@@ -4,7 +4,7 @@
   "description": "ESLint-style parser for Peggy grammars",
   "main": "lib/index.js",
   "scripts": {
-    "parser": "peggy -c .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy && node tools/fix-parser.js",
+    "parser": "peggy -c .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy",
     "ts": "tsc",
     "ts:sourcemap": "tsc --inlineSourceMap",
     "build": "npm run parser && npm run ts",
@@ -31,15 +31,15 @@
     "@types/eslint": "8.37.0",
     "@types/estree": "1.0.0",
     "@types/node": "18.15.11",
-    "@typescript-eslint/eslint-plugin": "5.58.0",
-    "@typescript-eslint/parser": "5.58.0",
+    "@typescript-eslint/eslint-plugin": "5.59.0",
+    "@typescript-eslint/parser": "5.59.0",
     "c8": "7.13.0",
     "eslint": "8.38.0",
     "eslint-plugin-mocha": "10.1.0",
     "mocha": "10.2.0",
     "peggy": "3.0.2",
     "source-map-support": "0.5.21",
-    "ts-pegjs": "4.0.0",
+    "ts-pegjs": "4.1.0",
     "typescript": "5.0.4"
   },
   "engines": {
