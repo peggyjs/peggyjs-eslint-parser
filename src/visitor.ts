@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/quote-props */
 import * as AST from "./ast";
 import type ESlint from "eslint";
 

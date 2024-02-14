@@ -1,6 +1,6 @@
 import type * as ESlint from "eslint";
 import * as visitor from "./visitor";
-import { PeggySyntaxError, parse } from "./parser";
+import { SyntaxError as PeggySyntaxError, parse } from "./parser.js";
 
 export { visitor };
 
@@ -109,8 +109,10 @@ interface parseOptions {
 /**
  * Parse Peggy text and return the format that eslint requires.
  */
-export function parseForESLint(code: string, options: parseOptions = {}):
-  ESlint.Linter.ESLintParseResult {
+export function parseForESLint(
+  code: string,
+  options: parseOptions = {}
+): ESlint.Linter.ESLintParseResult {
   try {
     const ast = parse(code, {
       grammarSource: options.filePath,

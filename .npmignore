@@ -16,3 +16,4 @@ tsconfig.json
 .peggy.js
 .mocharc.js
 tools/
+eslint.config.js

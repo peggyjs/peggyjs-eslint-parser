@@ -4,11 +4,14 @@
   "description": "ESLint-style parser for Peggy grammars",
   "main": "lib/index.js",
   "scripts": {
-    "parser": "peggy -c .peggy.js --plugin ts-pegjs -o src/parser.ts src/parser.peggy",
+    "clean": "rimraf lib src/parser.js",
+    "parser": "peggy src/parser.peggy",
     "ts": "tsc",
     "ts:sourcemap": "tsc --inlineSourceMap",
     "build": "npm run parser && npm run ts",
-    "lint": "eslint . --ext js,ts",
+    "postbuild": "copyfiles -u -a -f src/parser.js src/parser.d.ts lib",
+    "lint": "eslint .",
+    "pretest": "npm run build",
     "test": "mocha",
     "precoverage": "npm run parser && npm run ts:sourcemap",
     "coverage": "c8 npm test",
@@ -27,22 +30,23 @@
   "repository": "peggyjs/peggyjs-eslint-parser",
   "bugs": "https://github.com/peggyjs/peggyjs-eslint-parser/issues",
   "devDependencies": {
-    "@peggyjs/eslint-config": "3.0.1",
-    "@types/eslint": "8.37.0",
-    "@types/estree": "1.0.0",
-    "@types/node": "18.15.11",
-    "@typescript-eslint/eslint-plugin": "5.59.0",
-    "@typescript-eslint/parser": "5.59.0",
-    "c8": "7.13.0",
-    "eslint": "8.38.0",
-    "eslint-plugin-mocha": "10.1.0",
-    "mocha": "10.2.0",
-    "peggy": "3.0.2",
+    "@peggyjs/eslint-config": "3.2.1",
+    "@types/eslint": "8.56.2",
+    "@types/estree": "1.0.5",
+    "@types/node": "20.11.17",
+    "@typescript-eslint/eslint-plugin": "7.0.1",
+    "@typescript-eslint/parser": "7.0.1",
+    "c8": "9.1.0",
+    "copyfiles": "2.4.1",
+    "eslint": "8.56.0",
+    "eslint-plugin-mocha": "10.2.0",
+    "mocha": "10.3.0",
+    "peggy": "4.0.0",
+    "rimraf": "5.0.5",
     "source-map-support": "0.5.21",
-    "ts-pegjs": "4.1.0",
-    "typescript": "5.0.4"
+    "typescript": "5.3.3"
   },
   "engines": {
-    "node": ">=14.20"
+    "node": ">=18"
   }
 }
