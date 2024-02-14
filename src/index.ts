@@ -109,8 +109,10 @@ interface parseOptions {
 /**
  * Parse Peggy text and return the format that eslint requires.
  */
-export function parseForESLint(code: string, options: parseOptions = {}):
-  ESlint.Linter.ESLintParseResult {
+export function parseForESLint(
+  code: string,
+  options: parseOptions = {}
+): ESlint.Linter.ESLintParseResult {
   try {
     const ast = parse(code, {
       grammarSource: options.filePath,

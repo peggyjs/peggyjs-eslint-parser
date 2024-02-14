@@ -10,7 +10,7 @@
     "ts:sourcemap": "tsc --inlineSourceMap",
     "build": "npm run parser && npm run ts",
     "postbuild": "copyfiles -u -a -f src/parser.js src/parser.d.ts lib",
-    "lint": "eslint . --ext js,ts",
+    "lint": "eslint .",
     "pretest": "npm run build",
     "test": "mocha",
     "precoverage": "npm run parser && npm run ts:sourcemap",
