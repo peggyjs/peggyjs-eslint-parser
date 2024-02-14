@@ -1,6 +1,6 @@
 import type * as ESlint from "eslint";
 import * as visitor from "./visitor";
-import { PeggySyntaxError, parse } from "./parser";
+import { SyntaxError as PeggySyntaxError, parse } from "./parser.js";
 
 export { visitor };
 

@@ -1,3 +1,5 @@
+// Originally generated with ts-pegjs, then hand-maintained.
+
 import type * as ast from "./ast";
 export interface FilePosition {
     offset: number;
@@ -62,7 +64,7 @@ export type ParseFunction = <Options extends ParseOptions>(input: string, option
     startRule: infer StartRule;
 } ? StartRule extends "Program" ? Program : Program : Program;
 export declare const parse: ParseFunction;
-export declare const PeggySyntaxError: typeof _PeggySyntaxError;
-export type PeggySyntaxError = _PeggySyntaxError;
+export declare const SyntaxError: typeof _PeggySyntaxError;
+export type SyntaxError = _PeggySyntaxError;
 export type Program = ast.Node;
 export {};

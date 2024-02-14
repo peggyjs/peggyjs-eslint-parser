@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "node16",
-    "moduleResolution": "node",
+    "module": "nodeNext",
+    "moduleResolution": "nodeNext",
     "noEmitOnError": true,
     "noImplicitReturns": true,
     "outDir": "./lib/",

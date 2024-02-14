@@ -32,33 +32,32 @@
 //
 // [1] http://www.ecma-international.org/publications/standards/Ecma-262.htm
 
+// import {ImportDeclarations} from 'peggy/lib/parser.js'
+
 {{
 
-  const OPS_TO_PREFIXED_TYPES:
-    Record<string, "text" | "simple_and" | "simple_not"> = {
+  const OPS_TO_PREFIXED_TYPES = {
       "$": "text",
       "&": "simple_and",
       "!": "simple_not"
     };
 
-  const OPS_TO_SUFFIXED_TYPES:
-    Record<string, "optional" | "zero_or_more" | "one_or_more"> = {
+  const OPS_TO_SUFFIXED_TYPES = {
       "?": "optional",
       "*": "zero_or_more",
       "+": "one_or_more"
     };
 
-  const OPS_TO_SEMANTIC_PREDICATE_TYPES:
-    Record<string, "semantic_and" | "semantic_not"> = {
+  const OPS_TO_SEMANTIC_PREDICATE_TYPES = {
       "&": "semantic_and",
       "!": "semantic_not"
     };
 }}
 {
   const reservedWords = options.reservedWords || [];
-  const comments: ESTree.Comment[] = [];
+  const comments = [];
 
-  function loc(node: Partial<ast.Node>): ast.Node {
+  function loc(node) {
     // Convert to estree-style location
     const l = location();
     node.loc = {
@@ -76,7 +75,7 @@
       l.start.offset,
       l.end.offset,
     ];
-    return node as ast.Node;
+    return node;
   }
 }
 // ---- Syntactic Grammar -----
@@ -93,11 +92,13 @@ Program
   }
 
 Grammar
-  = __ topLevelInitializer:( @TopLevelInitializer __ )?
-       initializer:( @Initializer __ )?
-       rules:( @Rule __ )+ {
+  // = imports:ImportDeclarations
+  = topLevelInitializer:(__ @TopLevelInitializer)?
+    initializer:(__ @Initializer)? __
+    rules:(@Rule __)+ {
       return loc({
         type: "grammar",
+        // imports,
         topLevelInitializer,
         initializer,
         rules,
@@ -161,8 +162,8 @@ ChoiceExpression
       return tail.length > 0
         ? loc({
             type: "choice",
-            alternatives: [head, ...tail.map((v: ast.Node[]) => v[1])],
-            slashes: tail.map((v: ast.Node[]) => v[0]),
+            alternatives: [head, ...tail.map(v => v[1])],
+            slashes: tail.map(v => v[0]),
           })
         : head;
     }
@@ -440,7 +441,7 @@ CharacterClassMatcher "character class"
     {
       return loc({
         type: "class",
-        parts: parts.filter((part:(string|unknown)) => part !== ""),
+        parts: parts.filter(part => part !== ""),
         inverted: inverted !== null,
         ignoreCase: ignoreCase !== null,
       });
@@ -565,7 +566,7 @@ MultiLineComment
 
 MultiLineCommentChars
   = value:$( !"*/" SourceCharacter )* {
-    comments.push(loc({ type: "Block", value }) as unknown as ESTree.Comment);
+    comments.push(loc({ type: "Block", value }));
   }
 
 MultiLineCommentNoLineTerminator
@@ -573,7 +574,7 @@ MultiLineCommentNoLineTerminator
 
 MultiLineCommentNoLineTerminatorChars
   = value:$( !( "*/" / LineTerminator ) SourceCharacter )* {
-    comments.push(loc({ type: "Block", value }) as unknown as ESTree.Comment);
+    comments.push(loc({ type: "Block", value }));
   }
 
 SingleLineComment
@@ -581,7 +582,7 @@ SingleLineComment
 
 SingleLineCommentChars
   = value:$( !LineTerminator SourceCharacter )* {
-    comments.push(loc({ type: "Line", value }) as unknown as ESTree.Comment);
+    comments.push(loc({ type: "Line", value }));
   }
 
 SourceCharacter
