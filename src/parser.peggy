@@ -32,8 +32,6 @@
 //
 // [1] http://www.ecma-international.org/publications/standards/Ecma-262.htm
 
-// import {ImportDeclarations} from 'peggy/lib/parser.js'
-
 {{
 
   const OPS_TO_PREFIXED_TYPES = {
@@ -92,18 +90,124 @@ Program
   }
 
 Grammar
-  // = imports:ImportDeclarations
-  = topLevelInitializer:(__ @TopLevelInitializer)?
+  = imports:ImportDeclarations
+    topLevelInitializer:(__ @TopLevelInitializer)?
     initializer:(__ @Initializer)? __
     rules:(@Rule __)+ {
       return loc({
         type: "grammar",
-        // imports,
+        imports,
         topLevelInitializer,
         initializer,
         rules,
       });
     }
+
+ImportDeclarations
+  = ImportDeclaration*
+
+ImportDeclaration
+  = __ "import" __ what:ImportClause __ from:FromClause (__ ";")? {
+      return loc({
+        type: "grammar_import",
+        what,
+        from,
+      });
+    }
+  / __ "import" __ from:ModuleSpecifier (__ ";")? {
+      return loc({
+        type: "grammar_import",
+        what: [],
+        from,
+      });
+    } // Intializers only
+
+ImportClause
+  = NameSpaceImport
+  / NamedImports
+  / first:ImportedDefaultBinding others:(__ "," __ @(NameSpaceImport / NamedImports))? {
+    if (!others) {
+      return [first];
+    }
+    if (Array.isArray(others)) {
+      others.unshift(first);
+      return others;
+    }
+    return [first, others];
+  }
+
+ImportedDefaultBinding
+  = binding:ImportedBinding {
+    return loc({
+      type: 'import_binding_default',
+      binding,
+    });
+  }
+
+NameSpaceImport
+  = "*" __ "as" __ binding:ImportedBinding {
+    return [loc({
+      type: 'import_binding_all',
+      binding,
+    })];
+  }
+
+NamedImports
+  = "{" __ "}" { return [] } // Can't have bare comma
+  / "{" __ @ImportsList __ ("," __)? "}"
+
+FromClause
+  = "from" __ @ModuleSpecifier
+
+ImportsList
+  = ImportSpecifier|1.., __ "," __|
+
+ImportSpecifier
+  = rename:ModuleExportName __ "as" __ binding:ImportedBinding {
+    return loc({
+      type: 'import_binding_rename',
+      rename,
+      binding,
+    })
+  }
+  / binding:ImportedBinding {
+    return loc({
+      type: 'import_binding',
+      binding,
+    });
+  }
+
+ModuleSpecifier
+  = module:StringLiteral {
+      return loc({
+        type: 'import_module_specifier',
+        ...module,
+      })
+    }
+
+ImportedBinding
+  = id:BindingIdentifier {
+      return loc({
+        type: 'binding',
+        id
+      });
+    }
+
+ModuleExportName
+  = IdentifierName
+  / name:StringLiteral {
+    return loc({
+      type: 'module_export_name',
+      ...name,
+    });
+  }
+
+BindingIdentifier = id:IdentifierName {
+  if (reservedWords.indexOf(id[0]) >= 0) {
+    error(`Binding identifier can't be a reserved word "${id[0]}"`, id[1]);
+  }
+  return id[0];
+}
 
 TopLevelInitializer
   = open:OpenCurly code:CodeBlock close:CloseCurly semi:EOS {
@@ -323,7 +427,15 @@ PrimaryExpression
     }
 
 RuleReferenceExpression
-  = name:IdentifierName !( __ ( StringLiteral __ )? "=" ) {
+  = library:IdentifierName "." name:IdentifierName {
+      return loc({
+        type: "library_ref",
+        name,
+        library,
+        libraryNumber: -1,
+      });
+    }
+  / name:IdentifierName !(__ (StringLiteral __)? "=") {
       return loc({ type: "rule_ref", name });
     }
 

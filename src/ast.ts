@@ -7,7 +7,15 @@ import type * as EStree from "estree";
  */
 export const visitorKeys = {
   Program: ["body", "comments"],
-  grammar: ["topLevelInitializer", "initializer", "rules"],
+  grammar: ["imports", "topLevelInitializer", "initializer", "rules"],
+  grammar_import: ["what", "from"],
+  binding: [],
+  import_binding: ["binding"],
+  import_binding_all: ["binding"],
+  import_binding_default: ["binding"],
+  import_binding_rename: ["rename", "binding"],
+  import_module_specifier: ["before", "after"],
+  module_export_name: ["before", "after"],
   top_level_initializer: ["open", "code", "close", "semi"],
   initializer: ["code", "semi"],
   rule: ["name", "equals", "expression", "semi"],
@@ -31,6 +39,7 @@ export const visitorKeys = {
   group: ["open", "expression", "close"],
   semantic_and: ["operator", "code"],
   semantic_not: ["operator", "code"],
+  library_ref: ["name", "library"],
   rule_ref: ["name"],
   literal: ["before", "after"],
   display: ["before", "after"],
@@ -82,10 +91,46 @@ export interface Program extends BaseNode<"Program"> {
 }
 
 export interface Grammar extends BaseNode<"grammar"> {
+  imports: Import[];
   topLevelInitializer?: TopLevelInitializer;
   initializer?: Initializer;
   rules: Rule[];
 }
+
+export interface Import extends BaseNode<"grammar_import"> {
+  what: (
+    | ImportBinding
+    | ImportBindingAll
+    | ImportBindingDefault
+    | ImportBindingRename
+  )[];
+  from: ImportModuleSpecifier;
+}
+
+export interface ImportBinding extends BaseNode<"import_binding"> {
+  binding: Binding;
+}
+
+export interface ImportBindingAll extends BaseNode<"import_binding_all"> {
+  binding: Binding;
+}
+
+export interface ImportBindingDefault extends BaseNode<"import_binding_default"> {
+  binding: Binding;
+}
+
+export interface ImportBindingRename extends BaseNode<"import_binding_rename"> {
+  rename: string;
+  binding: Binding;
+}
+
+export interface Binding extends BaseNode<"binding"> {
+  id?: string;
+}
+
+export type ImportModuleSpecifier = QuotedString<"import_module_specifier">;
+
+export type ModuleExportName = QuotedString<"module_export_name">;
 
 export type TopLevelInitializer = BaseNode<"top_level_initializer">
   & Bracketed & Coded & Terminated;
@@ -177,6 +222,7 @@ interface QuotedString<T extends NodeTypes> extends ValueExpression<T> {
   before: Punctuation;
   after: Punctuation;
   raw: string;
+  value: string;
 }
 
 export interface LiteralExpression extends QuotedString<"literal"> {
@@ -256,6 +302,16 @@ export type Expression
   | SequenceExpression
   | SuffixedExpression;
 
+export type ImportDtails
+  = Binding
+  | Import
+  | ImportBinding
+  | ImportBindingAll
+  | ImportBindingDefault
+  | ImportBindingRename
+  | ImportModuleSpecifier
+  | ModuleExportName;
+
 export type Node
   = Boundaries
   | Boundary
@@ -268,6 +324,7 @@ export type Node
   | DisplayName
   | Expression
   | Grammar
+  | ImportDtails
   | Initializer
   | Name
   | Program
