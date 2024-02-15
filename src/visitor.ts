@@ -13,53 +13,59 @@ interface VisitorOptions<T> {
 }
 
 type VisitorFunction<T, U extends AST.Node> =
+  (node: U, opts: VisitorOptions<T>) => T | undefined;
+
+type VisitorFunctionOptional<T, U extends AST.Node> =
   (node: U, opts?: VisitorOptions<T>) => T | undefined;
 
 interface VisitorFunctionMap<T> {
-  "*"?: VisitorFunction<T, AST.Node>;
-  Program?: VisitorFunction<T, AST.Program>;
-  grammar?: VisitorFunction<T, AST.Grammar>;
-  grammar_import?: VisitorFunction<T, AST.Import>;
-  binding?: VisitorFunction<T, AST.Binding>;
-  import_binding?: VisitorFunction<T, AST.ImportBinding>;
-  import_binding_all?: VisitorFunction<T, AST.ImportBindingAll>;
-  import_binding_default?: VisitorFunction<T, AST.ImportBindingDefault>;
-  import_binding_rename?: VisitorFunction<T, AST.ImportBindingRename>;
-  import_module_specifier?: VisitorFunction<T, AST.ImportModuleSpecifier>;
-  module_export_name?: VisitorFunction<T, AST.ModuleExportName>;
-  top_level_initializer?: VisitorFunction<T, AST.TopLevelInitializer>;
-  initializer?: VisitorFunction<T, AST.Initializer>;
-  rule?: VisitorFunction<T, AST.Rule>;
-  named?: VisitorFunction<T, AST.NamedExpression>;
-  repeated?: VisitorFunction<T, AST.RepeatedExpression>;
-  boundaries?: VisitorFunction<T, AST.Boundaries>;
-  delimiter?: VisitorFunction<T, AST.Delimiter>;
-  constant?: VisitorFunction<T, AST.BoundaryConstant>;
-  variable?: VisitorFunction<T, AST.BoundaryVariable>;
-  function?: VisitorFunction<T, AST.BoundaryFunction>;
-  choice?: VisitorFunction<T, AST.ChoiceExpression>;
-  action?: VisitorFunction<T, AST.ActionExpression>;
-  sequence?: VisitorFunction<T, AST.SequenceExpression>;
-  labeled?: VisitorFunction<T, AST.LabeledExpression>;
-  text?: VisitorFunction<T, AST.TextExpression>;
-  simple_and?: VisitorFunction<T, AST.SimpleAndExpression>;
-  simple_not?: VisitorFunction<T, AST.SimpleNotExpression>;
-  optional?: VisitorFunction<T, AST.OptionalExpression>;
-  zero_or_more?: VisitorFunction<T, AST.ZeroOrMoreExpression>;
-  one_or_more?: VisitorFunction<T, AST.OneOrMoreExpression>;
-  group?: VisitorFunction<T, AST.GroupExpression>;
-  semantic_and?: VisitorFunction<T, AST.SemanticAndExpression>;
-  semantic_not?: VisitorFunction<T, AST.SemanticNotExpression>;
-  rule_ref?: VisitorFunction<T, AST.RuleReferenceExpression>;
-  literal?: VisitorFunction<T, AST.LiteralExpression>;
-  display?: VisitorFunction<T, AST.DisplayName>;
-  class?: VisitorFunction<T, AST.ClassExpression>;
-  any?: VisitorFunction<T, AST.AnyExpression>;
-  name?: VisitorFunction<T, AST.NamedExpression>;
-  code?: VisitorFunction<T, AST.Code>;
-  punc?: VisitorFunction<T, AST.Punctuation>;
-  Block?: VisitorFunction<T, AST.BlockComment>;
-  Line?: VisitorFunction<T, AST.LineComment>;
+  // This is the only one with optional options.
+  "*"?: VisitorFunctionOptional<T, AST.Node>;
+  Program?: VisitorFunctionOptional<T, AST.Program>;
+  grammar?: VisitorFunctionOptional<T, AST.Grammar>;
+  grammar_import?: VisitorFunctionOptional<T, AST.Import>;
+  binding?: VisitorFunctionOptional<T, AST.Binding>;
+  import_binding?: VisitorFunctionOptional<T, AST.ImportBinding>;
+  import_binding_all?: VisitorFunctionOptional<T, AST.ImportBindingAll>;
+  import_binding_default?: VisitorFunctionOptional<T, AST.ImportBindingDefault>;
+  import_binding_rename?: VisitorFunctionOptional<T, AST.ImportBindingRename>;
+  // eslint-disable-next-line @stylistic/max-len
+  import_module_specifier?: VisitorFunctionOptional<T, AST.ImportModuleSpecifier>;
+  module_export_name?: VisitorFunctionOptional<T, AST.ModuleExportName>;
+  top_level_initializer?: VisitorFunctionOptional<T, AST.TopLevelInitializer>;
+  initializer?: VisitorFunctionOptional<T, AST.Initializer>;
+  rule?: VisitorFunctionOptional<T, AST.Rule>;
+  named?: VisitorFunctionOptional<T, AST.NamedExpression>;
+  repeated?: VisitorFunctionOptional<T, AST.RepeatedExpression>;
+  boundaries?: VisitorFunctionOptional<T, AST.Boundaries>;
+  delimiter?: VisitorFunctionOptional<T, AST.Delimiter>;
+  constant?: VisitorFunctionOptional<T, AST.BoundaryConstant>;
+  variable?: VisitorFunctionOptional<T, AST.BoundaryVariable>;
+  function?: VisitorFunctionOptional<T, AST.BoundaryFunction>;
+  choice?: VisitorFunctionOptional<T, AST.ChoiceExpression>;
+  action?: VisitorFunctionOptional<T, AST.ActionExpression>;
+  sequence?: VisitorFunctionOptional<T, AST.SequenceExpression>;
+  labeled?: VisitorFunctionOptional<T, AST.LabeledExpression>;
+  text?: VisitorFunctionOptional<T, AST.TextExpression>;
+  simple_and?: VisitorFunctionOptional<T, AST.SimpleAndExpression>;
+  simple_not?: VisitorFunctionOptional<T, AST.SimpleNotExpression>;
+  optional?: VisitorFunctionOptional<T, AST.OptionalExpression>;
+  zero_or_more?: VisitorFunctionOptional<T, AST.ZeroOrMoreExpression>;
+  one_or_more?: VisitorFunctionOptional<T, AST.OneOrMoreExpression>;
+  group?: VisitorFunctionOptional<T, AST.GroupExpression>;
+  semantic_and?: VisitorFunctionOptional<T, AST.SemanticAndExpression>;
+  semantic_not?: VisitorFunctionOptional<T, AST.SemanticNotExpression>;
+  rule_ref?: VisitorFunctionOptional<T, AST.RuleReferenceExpression>;
+  literal?: VisitorFunctionOptional<T, AST.LiteralExpression>;
+  display?: VisitorFunctionOptional<T, AST.DisplayName>;
+  class?: VisitorFunctionOptional<T, AST.ClassExpression>;
+  // In a grammar, `.` -> any.  NOT the same as "*".
+  any?: VisitorFunctionOptional<T, AST.AnyExpression>;
+  name?: VisitorFunctionOptional<T, AST.NamedExpression>;
+  code?: VisitorFunctionOptional<T, AST.Code>;
+  punc?: VisitorFunctionOptional<T, AST.Punctuation>;
+  Block?: VisitorFunctionOptional<T, AST.BlockComment>;
+  Line?: VisitorFunctionOptional<T, AST.LineComment>;
 
   "Program:exit"?: VisitorFunction<T, AST.Program>;
   "grammar:exit"?: VisitorFunction<T, AST.Grammar>;
@@ -113,7 +119,7 @@ interface VisitorFunctionMap<T> {
 export class Visitor<T> {
   public static visitorKeys: ESlint.SourceCode.VisitorKeys = AST.visitorKeys;
   private functions: VisitorFunctionMap<T>;
-  private star?: (node: AST.Node, opts?: VisitorOptions<T>) => T | undefined;
+  private star?: VisitorFunctionOptional<T, AST.Node>;
   private starExit?: VisitorFunction<T, AST.Node>;
 
   /**
@@ -135,7 +141,7 @@ export class Visitor<T> {
     }
 
     // @ts-expect-error It looks like ts gets this wrong.
-    const enterFun: VisitorFunction<T, AST.Node> | undefined
+    const enterFun: VisitorFunctionOptional<T, AST.Node> | undefined
       = this.functions[node.type];
     if (enterFun) {
       parentResult = enterFun(node, opts);
@@ -180,7 +186,6 @@ export class Visitor<T> {
       }
       opts.thisResult = parentResult;
       if (exitFun) {
-        opts.thisResult = parentResult;
         exitFun(node, opts);
       }
       if (this.starExit) {
