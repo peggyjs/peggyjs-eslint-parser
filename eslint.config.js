@@ -10,6 +10,7 @@ module.exports = [
       "node_modules/**",
       "src/parser.d.ts",
       "src/parser.js",
+      "test/fixtures/*.js",
     ],
   },
   require("@peggyjs/eslint-config/flat/js"),

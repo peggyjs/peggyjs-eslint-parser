@@ -13,10 +13,20 @@ interface VisitorOptions<T> {
 }
 
 type VisitorFunction<T, U extends AST.Node> =
-  (node: U, opts: VisitorOptions<T>) => T | undefined;
+  (node: U, opts?: VisitorOptions<T>) => T | undefined;
 
 interface VisitorFunctionMap<T> {
+  "*"?: VisitorFunction<T, AST.Node>;
+  Program?: VisitorFunction<T, AST.Program>;
   grammar?: VisitorFunction<T, AST.Grammar>;
+  grammar_import?: VisitorFunction<T, AST.Import>;
+  binding?: VisitorFunction<T, AST.Binding>;
+  import_binding?: VisitorFunction<T, AST.ImportBinding>;
+  import_binding_all?: VisitorFunction<T, AST.ImportBindingAll>;
+  import_binding_default?: VisitorFunction<T, AST.ImportBindingDefault>;
+  import_binding_rename?: VisitorFunction<T, AST.ImportBindingRename>;
+  import_module_specifier?: VisitorFunction<T, AST.ImportModuleSpecifier>;
+  module_export_name?: VisitorFunction<T, AST.ModuleExportName>;
   top_level_initializer?: VisitorFunction<T, AST.TopLevelInitializer>;
   initializer?: VisitorFunction<T, AST.Initializer>;
   rule?: VisitorFunction<T, AST.Rule>;
@@ -53,6 +63,14 @@ interface VisitorFunctionMap<T> {
 
   "Program:exit"?: VisitorFunction<T, AST.Program>;
   "grammar:exit"?: VisitorFunction<T, AST.Grammar>;
+  "grammar_import:exit"?: VisitorFunction<T, AST.Import>;
+  "binding:exit"?: VisitorFunction<T, AST.Binding>;
+  "import_binding:exit"?: VisitorFunction<T, AST.ImportBinding>;
+  "import_binding_all:exit"?: VisitorFunction<T, AST.ImportBindingAll>;
+  "import_binding_default:exit"?: VisitorFunction<T, AST.ImportBindingDefault>;
+  "import_binding_rename:exit"?: VisitorFunction<T, AST.ImportBindingRename>;
+  "import_module_specifier:exit"?: VisitorFunction<T, AST.ImportModuleSpecifier>;
+  "module_export_name:exit"?: VisitorFunction<T, AST.ModuleExportName>;
   "top_level_initializer:exit"?: VisitorFunction<T, AST.TopLevelInitializer>;
   "initializer:exit"?: VisitorFunction<T, AST.Initializer>;
   "rule:exit"?: VisitorFunction<T, AST.Rule>;
@@ -87,9 +105,6 @@ interface VisitorFunctionMap<T> {
   "Block:exit"?: VisitorFunction<T, AST.BlockComment>;
   "Line:exit"?: VisitorFunction<T, AST.LineComment>;
   "*:exit"?: VisitorFunction<T, AST.Node>;
-
-  Program?(node: AST.Program): T | undefined;
-  "*"?(node: AST.Node, opts?: VisitorOptions<T>): T | undefined;
 }
 
 /**
@@ -97,11 +112,8 @@ interface VisitorFunctionMap<T> {
  */
 export class Visitor<T> {
   public static visitorKeys: ESlint.SourceCode.VisitorKeys = AST.visitorKeys;
-
   private functions: VisitorFunctionMap<T>;
-
   private star?: (node: AST.Node, opts?: VisitorOptions<T>) => T | undefined;
-
   private starExit?: VisitorFunction<T, AST.Node>;
 
   /**
@@ -121,9 +133,11 @@ export class Visitor<T> {
     if (this.star) {
       parentResult = this.star(node, opts);
     }
-    const enterFun = this.functions[node.type];
+
+    // @ts-expect-error It looks like ts gets this wrong.
+    const enterFun: VisitorFunction<T, AST.Node> | undefined
+      = this.functions[node.type];
     if (enterFun) {
-      // @ts-expect-error Can't get correct node type here
       parentResult = enterFun(node, opts);
     }
 
@@ -152,7 +166,9 @@ export class Visitor<T> {
       }
     }
 
-    const exitFun = this.functions[`${node.type}:exit`];
+    // @ts-expect-error It looks like ts gets this wrong.
+    const exitFun: VisitorFunction<T, AST.Node> | undefined
+      = this.functions[`${node.type}:exit`];
     if (this.starExit || exitFun) {
       if (!opts) {
         opts = {
@@ -165,7 +181,6 @@ export class Visitor<T> {
       opts.thisResult = parentResult;
       if (exitFun) {
         opts.thisResult = parentResult;
-        // @ts-expect-error Something went wrong with the types.
         exitFun(node, opts);
       }
       if (this.starExit) {

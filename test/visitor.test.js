@@ -6,72 +6,124 @@ const {
   parseForESLint,
   visitor,
 } = require("../lib/index");
+const AST = require("../lib/ast");
+
 const path = require("path");
 const fs = require("fs").promises;
 
-const filePath = path.join(__dirname, "fixtures", "fizzbuzz.peggy");
+const fizzbuzz = path.join(__dirname, "fixtures", "fizzbuzz.peggy");
+const fizzbuzz_import = path.join(__dirname, "fixtures", "fizzbuzz_import.peggy");
 
-describe("visitor", () => {
-  it("visit all", async() => {
-    const source = await fs.readFile(filePath, "utf8");
-    const { ast } = parseForESLint(source, { filePath });
-    const v = new visitor.Visitor({
-      "*": (node, opts) => {
-        if (opts) {
-          if (opts.array) {
-            return [...opts.parentResult, opts.name, node.type];
-          }
-          return [...opts.parentResult, node.type];
+async function checkVisit(filePath) {
+  const source = await fs.readFile(filePath, "utf8");
+  const { ast } = parseForESLint(source, { filePath });
+  const v = new visitor.Visitor({
+    "*": (node, opts) => {
+      if (opts) {
+        if (opts.array) {
+          return [...opts.parentResult, opts.name, node.type];
         }
-        return ["Program"];
-      },
-      "*:exit": (node, opts) => {
-        if (typeof node !== "object") {
-          console.log("%o", opts);
-          throw new Error("fail");
-        }
-        node.path = opts?.thisResult?.join("/");
-      },
-    });
-    v.visit(ast);
+        return [...opts.parentResult, node.type];
+      }
+      return ["Program"];
+    },
+    "*:exit": (node, opts) => {
+      if (typeof node !== "object") {
+        console.log("%o", opts);
+        throw new Error("fail");
+      }
+      node.path = opts?.thisResult?.join("/");
+    },
+  });
+  v.visit(ast);
 
-    // If needed:
-    // console.log(require("util").inspect(ast, {
-    //   depth: Infinity,
-    //   colors: process.stdout.isTTY,
-    // }));
+  // If needed:
+  // console.log(require("util").inspect(ast, {
+  //   depth: Infinity,
+  //   colors: process.stdout.isTTY,
+  // }));
 
-    // Manually visit, and make sure each node has a path.
-    function testVisit(o) {
-      if (typeof o === "object") {
-        if (!o) {
-          return;
+  // Manually visit, and make sure each node has a path.
+  function testVisit(o) {
+    if (typeof o === "object") {
+      if (!o) {
+        return;
+      }
+      if (Array.isArray(o)) {
+        for (const child of o) {
+          testVisit(child);
         }
-        if (Array.isArray(o)) {
-          for (const child of o) {
+      } else {
+        if (typeof o.path !== "string") {
+          console.log(o);
+        }
+        assert.equal(typeof o.path, "string");
+        for (const [k, child] of Object.entries(o)) {
+          if (k !== "loc") {
             testVisit(child);
-          }
-        } else {
-          if (typeof o.path !== "string") {
-            console.log(o);
-          }
-          assert.equal(typeof o.path, "string");
-          for (const [k, child] of Object.entries(o)) {
-            if (k !== "loc") {
-              testVisit(child);
-            }
           }
         }
       }
     }
-    // In case.
-    // console.log(require("util").inspect(ast, { depth: Infinity, colors: process.stdout.isTTY }));
-    testVisit(ast);
+  }
+  // In case.
+  // console.log(require("util").inspect(ast, { depth: Infinity, colors: process.stdout.isTTY }));
+  testVisit(ast);
+}
+
+async function typeVisit(filePath) {
+  // Hope to catch issues where the VisitorFunctionMap isn't complete
+  // or has a typo.
+  const source = await fs.readFile(filePath, "utf8");
+  const { ast } = parseForESLint(source, { filePath });
+
+  const stack = [];
+  const keyFuncs = {
+    // Star rules happen before specfic rules
+    "*": node => {
+      stack.push(node);
+    },
+    // Star-exit rules happen after specific rules.
+    "*:exit": node => {
+      stack.pop(node);
+    },
+  };
+  Object.keys(AST.visitorKeys).forEach(k => {
+    keyFuncs[k] = node => {
+      assert.equal(node.type, k);
+      assert.equal(stack[stack.length - 1], node); // NOT deep equal
+    };
+    keyFuncs[`${k}:exit`] = node => {
+      assert.equal(node.type, k);
+      assert.equal(stack[stack.length - 1], node); // NOT deep equal
+    };
+  });
+
+  const v = new visitor.Visitor(keyFuncs);
+  v.visit(ast);
+  assert.equal(stack.length, 0);
+}
+
+describe("visitor", () => {
+  it("visits all in fizzbuzz.peggy", async() => {
+    await checkVisit(fizzbuzz);
+  });
+
+  it("visits all in fizzbuzz_import.peggy", async() => {
+    await checkVisit(fizzbuzz_import);
+  });
+
+  it("checks types when visiting fizzbuzz.peggy", async() => {
+    await typeVisit(fizzbuzz);
+  });
+
+  it("checks types when visiting fizzbuzz_import.peggy", async() => {
+    await typeVisit(fizzbuzz_import);
   });
 
   it("functions", async() => {
-    const source = await fs.readFile(filePath, "utf8");
-    const { ast } = parseForESLint(source, { filePath });
+    const source = await fs.readFile(fizzbuzz, "utf8");
+    const { ast } = parseForESLint(source, { filePath: fizzbuzz });
 
     const functions = [];
     function addFunction(predicate, params, body) {
