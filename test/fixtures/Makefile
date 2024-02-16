@@ -1,4 +1,4 @@
-LIBS = space.js comment.js fizzbuzz.js
+LIBS = space.js comment.js fizzbuzz.js number.js
 
 .SUFFIXES: .ast.js .js .peggy
 %.js: %.peggy
@@ -7,8 +7,8 @@ LIBS = space.js comment.js fizzbuzz.js
 	../../tools/ast.js $< > $@
 
 .PHONY: all
-all: fizzbuzz.js fizzbuzz_import.js
-ast: fizzbuzz.ast.js fizzbuzz_import.ast.js
+all: fizzbuzz.js fizzbuzz_import.js csv.js
+ast: fizzbuzz.ast.js fizzbuzz_import.ast.js csv.ast.js
 
 fizzbuzz_import.js: fizzbuzz_import.peggy $(LIBS)
 	npx peggy $<

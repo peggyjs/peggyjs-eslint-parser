@@ -218,6 +218,12 @@ export interface RuleReferenceExpression extends BaseNode<"rule_ref"> {
   name: Name;
 }
 
+export interface LibraryReferenceExpression extends BaseNode<"library_ref"> {
+  library: Name;
+  name: Name;
+  libraryNumber: number;
+}
+
 interface QuotedString<T extends NodeTypes> extends ValueExpression<T> {
   before: Punctuation;
   after: Punctuation;
@@ -287,6 +293,7 @@ export type PrimaryExpression
   = AnyExpression
   | ClassExpression
   | GroupExpression
+  | LibraryReferenceExpression
   | LiteralExpression
   | RuleReferenceExpression
   | SemanticPredicateExpression;
