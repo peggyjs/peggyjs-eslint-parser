@@ -3,6 +3,5 @@
 coverage/
 lib/
 node_modules/
-pnpm-lock.yaml
 src/parser.js
 test/fixtures/*.js

@@ -56,6 +56,7 @@ interface VisitorFunctionMap<T> {
   semantic_and?: VisitorFunctionOptional<T, AST.SemanticAndExpression>;
   semantic_not?: VisitorFunctionOptional<T, AST.SemanticNotExpression>;
   rule_ref?: VisitorFunctionOptional<T, AST.RuleReferenceExpression>;
+  library_ref?: VisitorFunctionOptional<T, AST.LibraryReferenceExpression>;
   literal?: VisitorFunctionOptional<T, AST.LiteralExpression>;
   display?: VisitorFunctionOptional<T, AST.DisplayName>;
   class?: VisitorFunctionOptional<T, AST.ClassExpression>;
@@ -101,6 +102,7 @@ interface VisitorFunctionMap<T> {
   "semantic_and:exit"?: VisitorFunction<T, AST.SemanticAndExpression>;
   "semantic_not:exit"?: VisitorFunction<T, AST.SemanticNotExpression>;
   "rule_ref:exit"?: VisitorFunction<T, AST.RuleReferenceExpression>;
+  "library_ref:exit"?: VisitorFunction<T, AST.LibraryReferenceExpression>;
   "literal:exit"?: VisitorFunction<T, AST.LiteralExpression>;
   "display:exit"?:  VisitorFunction<T, AST.DisplayName>;
   "class:exit"?: VisitorFunction<T, AST.ClassExpression>;

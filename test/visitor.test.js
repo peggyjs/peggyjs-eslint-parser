@@ -13,6 +13,7 @@ const fs = require("fs").promises;
 
 const fizzbuzz = path.join(__dirname, "fixtures", "fizzbuzz.peggy");
 const fizzbuzz_import = path.join(__dirname, "fixtures", "fizzbuzz_import.peggy");
+const csv = path.join(__dirname, "fixtures", "csv.peggy");
 
 async function checkVisit(filePath) {
   const source = await fs.readFile(filePath, "utf8");
@@ -71,7 +72,7 @@ async function checkVisit(filePath) {
   testVisit(ast);
 }
 
-async function typeVisit(filePath) {
+async function typeVisit(filePath, keyCounts) {
   // Hope to catch issues where the VisitorFunctionMap isn't complete
   // or has a typo.
   const source = await fs.readFile(filePath, "utf8");
@@ -92,11 +93,19 @@ async function typeVisit(filePath) {
     keyFuncs[k] = node => {
       assert.equal(node.type, k);
       assert.equal(stack[stack.length - 1], node); // NOT deep equal
+      keyCounts[node.type]++;
     };
     keyFuncs[`${k}:exit`] = node => {
       assert.equal(node.type, k);
       assert.equal(stack[stack.length - 1], node); // NOT deep equal
+      keyCounts[`${node.type}:exit`]++;
     };
+    if (typeof keyCounts[k] === "undefined") {
+      keyCounts[k] = 0;
+    }
+    if (typeof keyCounts[`${k}:exit`] === "undefined") {
+      keyCounts[`${k}:exit`] = 0;
+    }
   });
 
   const v = new visitor.Visitor(keyFuncs);
@@ -113,12 +122,16 @@ describe("visitor", () => {
     await checkVisit(fizzbuzz_import);
   });
 
-  it("checks types when visiting fizzbuzz.peggy", async() => {
-    await typeVisit(fizzbuzz);
-  });
+  it("checks types ", async() => {
+    const keyCounts = {};
+    await typeVisit(fizzbuzz, keyCounts);
+    await typeVisit(fizzbuzz_import, keyCounts);
+    await typeVisit(csv, keyCounts);
 
-  it("checks types when visiting fizzbuzz_import.peggy", async() => {
-    await typeVisit(fizzbuzz_import);
+    // Make sure that we actually hit all of the AST types
+    for (const [k, v] of Object.entries(keyCounts)) {
+      assert(v > 0, k);
+    }
   });
 
   it("functions", async() => {

@@ -1,5 +1,4 @@
 "use strict";
-const mocha = require("eslint-plugin-mocha");
 
 module.exports = [
   {
@@ -22,16 +21,6 @@ module.exports = [
       globals: require("@peggyjs/eslint-config/flat/globals").node,
       ecmaVersion: 2022,
       sourceType: "commonjs",
-    },
-  },
-  {
-    files: ["test/**/*.js"],
-    plugins: {
-      mocha,
-    },
-    rules: {
-      ...mocha.configs.recommended.rules,
-      "mocha/no-mocha-arrows": "off",
     },
   },
 ];
