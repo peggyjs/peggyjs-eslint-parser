@@ -9,7 +9,7 @@ export const visitorKeys = {
   Program: ["body", "comments"],
   grammar: ["imports", "topLevelInitializer", "initializer", "rules"],
   grammar_import: ["what", "from"],
-  binding: [],
+  binding: ["id"],
   import_binding: ["binding"],
   import_binding_all: ["binding"],
   import_binding_default: ["binding"],
@@ -125,7 +125,7 @@ export interface ImportBindingRename extends BaseNode<"import_binding_rename"> {
 }
 
 export interface Binding extends BaseNode<"binding"> {
-  id?: string;
+  id?: Name;
 }
 
 export type ImportModuleSpecifier = QuotedString<"import_module_specifier">;
