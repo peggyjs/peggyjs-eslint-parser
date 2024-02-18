@@ -18,7 +18,7 @@ type VisitorFunction<T, U extends AST.Node> =
 type VisitorFunctionOptional<T, U extends AST.Node> =
   (node: U, opts?: VisitorOptions<T>) => T | undefined;
 
-interface VisitorFunctionMap<T> {
+export interface VisitorFunctionMap<T> {
   // This is the only one with optional options.
   "*"?: VisitorFunctionOptional<T, AST.Node>;
   Program?: VisitorFunctionOptional<T, AST.Program>;

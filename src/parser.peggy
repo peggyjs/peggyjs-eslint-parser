@@ -203,10 +203,10 @@ ModuleExportName
   }
 
 BindingIdentifier = id:IdentifierName {
-  if (reservedWords.indexOf(id[0]) >= 0) {
-    error(`Binding identifier can't be a reserved word "${id[0]}"`, id[1]);
+  if (reservedWords.indexOf(id.value) >= 0) {
+    error(`Binding identifier can't be a reserved word "${id.value}"`, id.loc);
   }
-  return id[0];
+  return id;
 }
 
 TopLevelInitializer
