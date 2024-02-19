@@ -120,12 +120,12 @@ export interface ImportBindingDefault extends BaseNode<"import_binding_default">
 }
 
 export interface ImportBindingRename extends BaseNode<"import_binding_rename"> {
-  rename: string;
+  rename: ModuleExportName | Name;
   binding: Binding;
 }
 
 export interface Binding extends BaseNode<"binding"> {
-  id?: Name;
+  id: Name;
 }
 
 export type ImportModuleSpecifier = QuotedString<"import_module_specifier">;
