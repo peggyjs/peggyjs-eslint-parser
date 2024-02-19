@@ -1,6 +1,6 @@
 {
   "name": "@peggyjs/eslint-parser",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "ESLint-style parser for Peggy grammars",
   "main": "lib/index.js",
   "scripts": {
