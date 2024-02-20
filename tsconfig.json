@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "noErrorTruncation": true,
     "allowJs": true,
     "declaration": true,
     "declarationMap": false,
@@ -10,9 +9,11 @@
     "module": "nodeNext",
     "moduleResolution": "nodeNext",
     "noEmitOnError": true,
+    "noErrorTruncation": true,
     "noImplicitReturns": true,
     "outDir": "./lib/",
     "removeComments": false,
+    "resolveJsonModule": true,
     "rootDir": "./src",
     "skipLibCheck": true,
     "sourceMap": false,
