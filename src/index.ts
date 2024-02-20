@@ -1,8 +1,13 @@
 import type * as ESlint from "eslint";
 import * as visitor from "./visitor";
 import { SyntaxError as PeggySyntaxError, parse } from "./parser.js";
-
 export { visitor };
+import { name, version } from "../package.json";
+
+export const meta = {
+  name,
+  version,
+};
 
 const RESERVED_WORDS = [
   // Reserved keywords as of ECMAScript 2015
